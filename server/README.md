@@ -1,0 +1,44 @@
+# Server API
+
+### Docker
+
+- Build
+
+  > docker build -t cryptonav-api:lastest .
+
+- Run Docker
+  > docker run -d -p 8000:8000 --name cryptonav-container cryptonav-api:lastest
+
+### Dev References
+
+- [VSCode FastAPI](https://code.visualstudio.com/docs/python/tutorial-fastapi)
+
+### uv install
+
+- Install [uv](https://docs.astral.sh/uv/) with our official standalone installer:
+  Windows:
+
+```
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+- Dễ dàng tái tạo: Dùng uv pip freeze > requirements.txt để lưu danh sách gói, sau đó cài lại bằng uv pip install -r requirements.txt.
+
+- Requires Python 3.12 or higher. First, we recommend using uv to setup the Python environment.
+
+> uv venv --python 3.12
+
+> .venv\Scripts\activate
+
+> uv pip install -r requirements.txt
+
+```
+fastapi==0.88.0
+uvicorn==0.20.0
+sqlalchemy==1.4.36
+pydantic==1.9.1
+python-dotenv==0.21.0
+
+```
+
+> python src/server.py
