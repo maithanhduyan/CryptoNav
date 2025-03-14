@@ -1,0 +1,14 @@
+{
+  "name": "UI Container (NodeJS)",
+  "dockerComposeFile": "../../docker-compose.devcontainer.yml",
+  "service": "cryptonav-ui",
+  // "build": { "dockerfile": "Dockerfile" },
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  },
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [3000]
+}

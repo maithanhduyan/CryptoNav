@@ -1,0 +1,15 @@
+{
+  "name": "API Container (Python)",
+  "dockerComposeFile": "../../docker-compose.devcontainer.yml",
+  "workspaceFolder": "/workspace",
+  "service": "cryptonav-api",
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  },
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [
+    8000
+  ]
+}

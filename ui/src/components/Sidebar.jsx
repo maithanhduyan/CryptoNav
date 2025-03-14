@@ -32,7 +32,7 @@ export default function Sidebar() {
               href="#"
               className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
             >
-              Analytics
+              AI Analytics
             </a>
           </li>
           <li>

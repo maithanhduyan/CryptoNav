@@ -5,7 +5,7 @@ function App() {
     <Layout>
       <div className="p-6 text-white">
         <h2 className="text-2xl font-semibold">Welcome to CryptoNav</h2>
-        <p>Your crypto portfolio management dashboard.</p>
+        <p>Crypto portfolio management dashboard.</p>
       </div>
     </Layout>
   );
