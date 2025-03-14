@@ -1,10 +1,10 @@
 # src/crud.py
 from sqlalchemy.orm import Session
-from src.models.user import User
-from src.models.asset import Asset
-from src.models.portfolio import Portfolio
-from src.models.transaction import Transaction
-from src.models.price_history import PriceHistory
+from models.user import User
+from models.asset import Asset
+from models.portfolio import Portfolio
+from models.transaction import Transaction
+from models.price_history import PriceHistory
 
 
 def create_item(db: Session, model_class, **kwargs):

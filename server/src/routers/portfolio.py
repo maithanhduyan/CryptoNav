@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.database import get_db
-from src.models.portfolio import Portfolio
+from database import get_db
+from models.portfolio import Portfolio
 from typing import List
-from src.schemas import PortfolioCreate, PortfolioResponse
+from schemas import PortfolioCreate, PortfolioResponse
 
 router = APIRouter()
 

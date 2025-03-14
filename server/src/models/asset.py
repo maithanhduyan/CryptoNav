@@ -1,6 +1,6 @@
 # src/models/asset.py
 from sqlalchemy import Column, Integer, String, Text
-from src.database import Base
+from database import Base
 
 
 class Asset(Base):

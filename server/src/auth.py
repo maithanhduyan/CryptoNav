@@ -5,8 +5,8 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 import bcrypt
 
-from src.database import get_db
-from src.models.user import User
+from database import get_db
+from models.user import User
 
 SECRET_KEY = "your-secret-key"  # Nên đặt trong file config hoặc biến môi trường
 ALGORITHM = "HS256"

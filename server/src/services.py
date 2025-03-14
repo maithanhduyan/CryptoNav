@@ -1,9 +1,9 @@
 # src/services.py
 from datetime import datetime
 from sqlalchemy.orm import Session
-from src.models.portfolio import Portfolio
-from src.models.transaction import Transaction
-from src.models.price_history import PriceHistory
+from models.portfolio import Portfolio
+from models.transaction import Transaction
+from models.price_history import PriceHistory
 
 
 def calculate_portfolio_value(db: Session, portfolio_id: int) -> float:

@@ -1,6 +1,6 @@
 # src/models/portfolio.py
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, func
-from src.database import Base
+from database import Base
 
 
 class Portfolio(Base):

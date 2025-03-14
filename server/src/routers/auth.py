@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 import bcrypt
 
-from src.database import get_db
-from src.models.user import User
-from src.schemas import UserCreate, Token
+from database import get_db
+from models.user import User
+from schemas import UserCreate, Token
 
 router = APIRouter()
 

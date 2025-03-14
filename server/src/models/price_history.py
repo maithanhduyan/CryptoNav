@@ -1,6 +1,6 @@
 # src/models/price_history.py
 from sqlalchemy import Column, Integer, DateTime, ForeignKey, Numeric
-from src.database import Base
+from database import Base
 
 
 class PriceHistory(Base):

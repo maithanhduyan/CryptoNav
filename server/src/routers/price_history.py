@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.database import get_db
-from src.models.price_history import PriceHistory
+from database import get_db
+from models.price_history import PriceHistory
 from typing import List
-from src.schemas import PriceHistoryCreate, PriceHistoryResponse
+from schemas import PriceHistoryCreate, PriceHistoryResponse
 from datetime import datetime
 
 router = APIRouter()

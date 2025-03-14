@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from src.database import engine, Base
-from src.routers import asset, auth, portfolio, price_history, transaction, user
+from database import engine, Base
+from routers import asset, auth, portfolio, price_history, transaction, user
 
 # Create all database tables
 Base.metadata.create_all(bind=engine)

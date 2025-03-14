@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.database import get_db
-from src.models.asset import Asset
+from database import get_db
+from models.asset import Asset
 from typing import List
-from src.schemas import AssetCreate, AssetResponse
+from schemas import AssetCreate, AssetResponse
 
 router = APIRouter()
 
