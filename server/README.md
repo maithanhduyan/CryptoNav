@@ -58,3 +58,8 @@ python-dotenv==0.21.0
 - uvicorn
 
 > uvicorn src.main:app --host 0.0.0.0 --port 8000
+
+## On Container
+> source .venv/bin/activate
+
+> fastapi run src/main.py

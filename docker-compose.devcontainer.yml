@@ -2,18 +2,15 @@ version: "3"
 
 services:
   cryptonav-ui:
+    container_name: cryptonav-ui
+    # image: cryptonav-ui:lastest
     build:
       context: .
       dockerfile: ./ui/Dockerfile
-      # args:
-      #   - USERNAME=vscode
-      #   - USER_UID=1000
-      #   - USER_GID=1000
       target: development
-    container_name: cryptonav-ui
-    # user: vscode
     ports:
       - "3000:3000"
+      - "5173:5173"
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace:cached
@@ -29,11 +26,6 @@ services:
       context: .
       dockerfile: ./server/Dockerfile
       target: development
-    #   args:
-    #     - USERNAME=vscode
-    #     - USER_UID=1000
-    #     - USER_GID=1000
-    # user: vscode
     ports:
       - "8000:8000"
     volumes:
