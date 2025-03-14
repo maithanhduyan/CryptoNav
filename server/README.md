@@ -21,6 +21,10 @@
 ```
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
+- Linux:
+> curl -LsSf https://astral.sh/uv/install.sh | sh
+or
+> wget -qO- https://astral.sh/uv/install.sh | sh
 
 - Dễ dàng tái tạo: Dùng uv pip freeze > requirements.txt để lưu danh sách gói, sau đó cài lại bằng uv pip install -r requirements.txt.
 

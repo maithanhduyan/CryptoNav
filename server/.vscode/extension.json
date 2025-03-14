@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-python.python",
     "ms-python.black-formatter",
+    "ms-python.debugpy",
     "ms-python.autopep8",
     "mhutchie.git-graph",
     "pkief.material-icon-theme",

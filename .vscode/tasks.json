@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build UI Container",
+      "type": "shell",
+      "command": [
+        "docker build -t cryptonav-ui:lastest .",
+        "-f ",
+        ".devcontainer\\ui\\Dockerfile",
+        "--no-cache"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker-Compose Build UI Container",
+      "type": "shell",
+      "command": [
+        "docker-compose -f docker-compose.devcontainer.yml build --no-cache cryptonav-ui"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker-Compose Build API Container",
+      "type": "shell",
+      "command": [
+        "docker-compose -f docker-compose.devcontainer.yml build --no-cache cryptonav-api"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
