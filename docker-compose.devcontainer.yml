@@ -15,7 +15,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./ui:/workspace:cached
+      # Mount the root folder that contains .git
+      - .:/workspace:cached
     restart: unless-stopped
 
     # Overrides default command so things don't shut down after the process ends.
@@ -36,7 +37,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./server:/workspace:cached
+      # Mount the root folder that contains .git
+      - .:/workspace:cached
     restart: unless-stopped
 
     # Overrides default command so things don't shut down after the process ends.

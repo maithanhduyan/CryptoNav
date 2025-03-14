@@ -10,6 +10,7 @@ RUN apk update && apk add --no-cache \
   python3 \
   py3-pip \
   make \
+  git \
   g++ \
   && rm -rf /var/cache/apk/*
 

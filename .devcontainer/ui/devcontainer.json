@@ -3,7 +3,7 @@
   "dockerComposeFile": "../../docker-compose.devcontainer.yml",
   "service": "cryptonav-ui",
   // "build": { "dockerfile": "Dockerfile" },
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/workspace/ui",
   "customizations": {
     "vscode": {
       "extensions": []
