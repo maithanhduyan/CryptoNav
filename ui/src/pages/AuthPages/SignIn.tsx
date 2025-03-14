@@ -1,19 +1,18 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import axios from "axios";
 
 export default function SignIn() {
-  const [username, setUsername] = useState(""); // Thay email bằng username
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { signIn } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      // Gửi dữ liệu dưới dạng form-data
       const formData = new FormData();
       formData.append("username", username);
       formData.append("password", password);
@@ -21,21 +20,15 @@ export default function SignIn() {
       const response = await axios.post(
         "http://localhost:8000/api/auth/token",
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-      console.log("Login response:", response.data);
 
       const { access_token } = response.data;
-      signIn(username, access_token); // Truyền username thay vì email
+      signIn(username, access_token);
       localStorage.setItem("token", access_token);
       navigate("/dashboard");
-    } catch (err) {
+    } catch (err: any) {
       setError(err.response?.data?.detail || "Invalid username or password");
-      console.error("Login error:", err.response?.data);
     }
   };
 
@@ -45,7 +38,7 @@ export default function SignIn() {
         <h2 className="text-white text-xl font-bold mb-6 text-center">Sign In</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <input
-            type="text" // Thay type="email" bằng type="text" vì dùng username
+            type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}

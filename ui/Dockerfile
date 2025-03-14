@@ -18,7 +18,7 @@ RUN useradd -ms /bin/bash vscode
 # Thiết lập thư mục làm việc
 WORKDIR /workspace
 ENV NODE_ENV=development
-# EXPOSE 5173 3000
+EXPOSE 5173 3000
 # CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 # Chuyển quyền sở hữu thư mục cho user vscode
 RUN chown -R vscode:vscode /workspace

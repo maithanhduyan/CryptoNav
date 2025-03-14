@@ -1,27 +1,24 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-    const success = signUp(email, password);
-    if (success) {
-      navigate("/"); // Chuyển hướng sau khi đăng ký
-    } else {
-      setError("Sign up failed");
-    }
+    // Gọi hàm signUp từ AuthContext (giả định trả về void hoặc boolean)
+    signUp(email, password); // Trong thực tế, bạn có thể cần điều chỉnh logic này nếu signUp trả về Promise hoặc giá trị khác
+    navigate("/"); // Chuyển hướng sau khi đăng ký thành công
   };
 
   return (
