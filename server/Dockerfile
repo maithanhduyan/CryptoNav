@@ -1,4 +1,4 @@
-# Base stage: môi trường chung cho cả dev và prod
+# Base stage
 FROM python:3.12-slim AS base
 
 ENV PYTHONUNBUFFERED=1
@@ -10,12 +10,15 @@ RUN apt-get update && apt-get install -y \
   git \
   && rm -rf /var/lib/apt/lists/*
 
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Cài đặt Python dependencies
 COPY ./server/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
+# RUN uv pip install --no-cache-dir -r requirements.txt
 
-# Development stage: có reload và debug
+# ------------------------------------------------------------------------------
+# Development stage
 FROM base AS development
 
 # Cài thêm debugpy và uvicorn cho dev
@@ -44,11 +47,12 @@ RUN existing_group=$(getent group $USER_GID | cut -d: -f1); \
 WORKDIR /workspace
 USER $USERNAME
 
+EXPOSE 8000
 # Command chạy ở chế độ reload (development)
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
-
-# Production stage: không reload, tối ưu hiệu suất
+# ------------------------------------------------------------------------------
+# Production stage
 FROM base AS production
 
 # Cài gunicorn và uvicorn cho prod

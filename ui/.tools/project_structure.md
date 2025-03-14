@@ -1,24 +1,26 @@
 # Cấu trúc Dự án như sau:
 
 ```
-..\ui
+.\
+├── Dockerfile
 ├── eslint.config.js
 ├── index.html
 ├── package-lock.json
 ├── package.json
-├── postcss.conf.js
 ├── src
-│   ├── App.css
 │   ├── App.jsx
+│   ├── components
+│   │   ├── Header.jsx
+│   │   ├── Layout.jsx
+│   │   └── Sidebar.jsx
 │   ├── index.css
 │   └── main.jsx
-├── tailwind.config.js
 └── vite.config.js
 ```
 
 # Danh sách chi tiết các file:
 
-## File ..\ui\eslint.config.js:
+## File .\eslint.config.js:
 ```javascript
 import js from '@eslint/js'
 import globals from 'globals'
@@ -56,37 +58,12 @@ export default [
 
 ```
 
-## File ..\ui\postcss.conf.js:
-```javascript
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-};
-```
-
-## File ..\ui\tailwind.config.js:
-```javascript
-module.exports = {
-  purge: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
-  theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
-};
-
-```
-
-## File ..\ui\vite.config.js:
+## File .\vite.config.js:
 ```javascript
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -97,47 +74,26 @@ export default defineConfig({
 
 ```
 
-## File ..\ui\src\App.jsx:
+## File .\src\App.jsx:
 ```
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Layout from "./components/Layout";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Layout>
+      <div className="p-6 text-white">
+        <h2 className="text-2xl font-semibold">Welcome to CryptoNav</h2>
+        <p>Your crypto portfolio management dashboard.</p>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Layout>
+  );
 }
 
-export default App
+export default App;
 
 ```
 
-## File ..\ui\src\main.jsx:
+## File .\src\main.jsx:
 ```
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -149,6 +105,103 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
+
+```
+
+## File .\src\components\Header.jsx:
+```
+export default function Header() {
+  return (
+    <header className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+      <h1 className="text-white text-xl font-semibold">CryptoNav</h1>
+      <nav>
+        <a href="#" className="text-gray-300 hover:text-white px-3">
+          Dashboard
+        </a>
+        <a href="#" className="text-gray-500 hover:text-white ml-4">
+          Portfolio
+        </a>
+        <a href="#" className="text-gray-500 hover:text-white ml-4">
+          Settings
+        </a>
+      </nav>
+    </header>
+  );
+}
+
+```
+
+## File .\src\components\Layout.jsx:
+```
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+
+export default function Layout({ children }) {
+  return (
+    <div className="flex flex-col h-screen bg-gray-950">
+      <Header />
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <main className="flex-1 overflow-auto p-6">{children}</main>
+      </div>
+    </div>
+  );
+}
+
+```
+
+## File .\src\components\Sidebar.jsx:
+```
+export default function Sidebar() {
+  return (
+    <aside className="w-64 bg-gray-900 border-r border-gray-800">
+      <nav className="mt-4">
+        <ul>
+          <li>
+            <a
+              href="#"
+              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
+            >
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
+            >
+              Portfolio
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
+            >
+              Transactions
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
+            >
+              Analytics
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
+            >
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  );
+}
 
 ```
 

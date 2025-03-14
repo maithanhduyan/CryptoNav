@@ -110,7 +110,7 @@ def write_markdown(files, output_file, root_dir, exclude_dirs=None, exclude_file
 
 if __name__ == "__main__":
     # Sử dụng os.path.join để tạo đường dẫn phù hợp với hệ điều hành
-    root_dir = os.path.join("..", "ui")  # Thư mục gốc của dự án
+    root_dir = os.path.join(".", "")  # Thư mục gốc của dự án
     output_file = os.path.join(".", ".tools", "project_structure.md")
     extensions = ["js", "jsx"]  # Danh sách các phần mở rộng tệp
     filenames = []  # Danh sách các tên tệp cụ thể

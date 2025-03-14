@@ -26,6 +26,8 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 or
 > wget -qO- https://astral.sh/uv/install.sh | sh
 
+> source $HOME/.local/bin/env
+
 - Dễ dàng tái tạo: Dùng uv pip freeze > requirements.txt để lưu danh sách gói, sau đó cài lại bằng uv pip install -r requirements.txt.
 
 - Requires Python 3.12 or higher. First, we recommend using uv to setup the Python environment.
