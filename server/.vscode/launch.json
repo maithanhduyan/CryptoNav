@@ -5,12 +5,11 @@
       "name": "Python Debugger: FastAPI",
       "type": "debugpy",
       "request": "launch",
-      "module": "uvicorn",
+      "program": "${workspaceFolder}/src/main.py",
       "args": [
-        "main:app",
-        "--reload"
+        ""
       ],
-      "jinja": true
+      "console": "integratedTerminal"
     },
     {
       "name": "API Server start",

@@ -1,65 +1,45 @@
-# Base stage
-FROM python:3.12-slim AS base
+# Stage 1: Development
+FROM ubuntu:24.04 AS development
 
-ENV PYTHONUNBUFFERED=1
+# Cài đặt các gói cần thiết (bao gồm Python)
+RUN apt-get update && apt-get install -y curl python3 python3-pip
 
-# Cài đặt các dependencies chung (hệ thống)
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  curl \
-  git \
-  && rm -rf /var/lib/apt/lists/*
+# Tạo user vscode
+RUN useradd -ms /bin/bash vscode
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Cài đặt Python dependencies
-COPY ./server/requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-# RUN uv pip install --no-cache-dir -r requirements.txt
-
-# ------------------------------------------------------------------------------
-# Development stage
-FROM base AS development
-
-# Cài thêm debugpy và uvicorn cho dev
-RUN pip install --no-cache-dir debugpy uvicorn[standard]
-
-# Tạo user không phải root
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=1000
-
-# Tạo group nếu group chưa tồn tại, hoặc đổi tên group hiện tại
-RUN existing_group=$(getent group $USER_GID | cut -d: -f1); \
-  if [ -z "$existing_group" ]; then \
-  groupadd --gid $USER_GID $USERNAME; \
-  else \
-  groupmod -n $USERNAME "$existing_group"; \
-  fi \
-  && existing_user=$(getent passwd $USER_UID | cut -d: -f1); \
-  if [ -z "$existing_user" ]; then \
-  useradd --uid $USER_UID --gid $USER_GID -m $USERNAME; \
-  else \
-  usermod -l $USERNAME -g $USER_GID -d /home/$USERNAME -m "$existing_user"; \
-  fi \
-  && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
+# Thiết lập thư mục làm việc
 WORKDIR /workspace
-USER $USERNAME
 
-EXPOSE 8000
-# Command chạy ở chế độ reload (development)
-# CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Sao chép file requirements.txt
+COPY ./server/requirements.txt ./
 
-# ------------------------------------------------------------------------------
-# Production stage
-FROM base AS production
+# Chuyển quyền sở hữu thư mục cho user vscode
+RUN chown -R vscode:vscode /workspace
 
-# Cài gunicorn và uvicorn cho prod
-RUN pip install --no-cache-dir gunicorn uvicorn[standard]
+# Chuyển sang user vscode
+USER vscode
 
-# Sao chép mã nguồn vào container
-COPY ./server/src /app/src
+# Cài đặt uv bằng script và thêm vào PATH
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+  echo 'export PATH="$HOME/.local/bin:$PATH"' >> $HOME/.bashrc
 
-# Chạy gunicorn + uvicorn worker (tối ưu production)
-CMD ["gunicorn", "src.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000"]
+# Tạo virtual environment bằng uv
+RUN /home/vscode/.local/bin/uv venv
+
+# Cài đặt các dependency
+RUN /home/vscode/.local/bin/uv pip install -r requirements.txt
+
+# Stage 2: Production (tùy chọn)
+FROM ubuntu:24.04 AS production
+
+RUN apt-get update && apt-get install -y curl python3 python3-pip
+RUN useradd -ms /bin/bash vscode
+WORKDIR /app
+COPY ./server/requirements.txt ./
+RUN chown -R vscode:vscode /app
+USER vscode
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+  echo 'export PATH="$HOME/.local/bin:$PATH"' >> $HOME/.bashrc
+RUN /home/vscode/.local/bin/uv venv
+RUN /home/vscode/.local/bin/uv pip install -r requirements.txt
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

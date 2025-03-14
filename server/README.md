@@ -47,4 +47,14 @@ python-dotenv==0.21.0
 
 ```
 
+## Run Server
+
 > python src/server.py
+
+- fastapi
+
+> fastapi run src/main.py
+
+- uvicorn
+
+> uvicorn src.main:app --host 0.0.0.0 --port 8000

@@ -5,7 +5,9 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "editor.rulers": [80],
+  "editor.rulers": [
+    80
+  ],
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": "active",
   "color-highlight.markRuler": true,
@@ -30,20 +32,20 @@
     "editor.defaultFormatter": "ms-python.black-formatter"
     // "editor.defaultFormatter": "ms-python.autopep8"
   },
-  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-  "python.terminal.activateEnvironment": true,
-  "python.terminal.activateEnvInCurrentTerminal": true,
-  "terminal.integrated.shellIntegration.enabled": true,
-  "terminal.integrated.defaultProfile.windows": "Command Prompt",
-  "terminal.integrated.profiles.windows": {
-    "Command Prompt": {
-      "path": "C:\\Windows\\System32\\cmd.exe"
-    }
-  },
-  "terminal.integrated.env.windows": {
-    "VIRTUAL_ENV": "${workspaceFolder}\\.venv",
-    "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
-  },
+  // "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  // "python.terminal.activateEnvironment": true,
+  // "python.terminal.activateEnvInCurrentTerminal": true,
+  // "terminal.integrated.shellIntegration.enabled": true,
+  // "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  // "terminal.integrated.profiles.windows": {
+  //   "Command Prompt": {
+  //     "path": "C:\\Windows\\System32\\cmd.exe"
+  //   }
+  // },
+  // "terminal.integrated.env.windows": {
+  // "VIRTUAL_ENV": "${workspaceFolder}\\.venv",
+  // "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+  // },
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   }
