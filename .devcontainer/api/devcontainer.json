@@ -1,8 +1,8 @@
 {
   "name": "API Container (Python)",
   "dockerComposeFile": "../../docker-compose.devcontainer.yml",
-  "workspaceFolder": "/workspace/server",
-  "service": "cryptonav-api",
+  "workspaceFolder": "/workspace/fastapi",
+  "service": "cryptonav_api",
   "customizations": {
     "vscode": {
       "extensions": []
