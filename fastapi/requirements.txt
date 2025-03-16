@@ -6,6 +6,6 @@ PyJWT
 python-json-logger
 psycopg2-binary
 alembic
-bcrypt==4.3.0
+passlib
 pytest
 pydantic[email]

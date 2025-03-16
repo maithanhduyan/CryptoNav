@@ -4,9 +4,11 @@ from datetime import datetime, timedelta, timezone
 import jwt  # PyJWT library
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-import bcrypt
 from app import config, model, database
+from passlib.context import CryptContext
 
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # Schema OAuth2PasswordBearer để lấy token từ Header Authorization
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
@@ -30,14 +32,12 @@ def create_access_token(data: dict, expires_delta: int = None):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Kiểm tra mật khẩu plaintext với mật khẩu đã băm."""
-    return bcrypt.checkpw(
-        plain_password.encode("utf-8"), hashed_password.encode("utf-8")
-    )
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """Băm mật khẩu (hash password) để lưu vào DB."""
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return pwd_context.hash(password)
 
 
 def get_current_user(
