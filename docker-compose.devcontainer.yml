@@ -14,28 +14,29 @@ services:
       - ./postgresql/data:/var/lib/postgresql/data
     restart: always
 
-  cryptonav-ui:
-    container_name: cryptonav-ui
-    # image: cryptonav-ui:lastest
+  cryptonav_ui:
+    container_name: cryptonav_ui
+    # image: cryptonav_ui:lastest
     build:
       context: .
       dockerfile: ./ui/Dockerfile
       target: development
     ports:
-      - "3000:3000"
       - "5173:5173"
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace:cached
+    depends_on:
+      - cryptonav_api
     restart: unless-stopped
 
     # Overrides default command so things don't shut down after the process ends.
     # command: sleep infinity
     command: /bin/sh -c "while sleep 1000; do :; done"
 
-  cryptonav-api:
-    container_name: cryptonav-api
-    # image: cryptonav-api:lastest
+  cryptonav_api:
+    container_name: cryptonav_api
+    # image: cryptonav_api:lastest
     build:
       context: .
       dockerfile: ./fastapi/Dockerfile
@@ -50,6 +51,8 @@ services:
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace:cached
+    depends_on:
+      - db
     restart: unless-stopped
 
     # Overrides default command so things don't shut down after the process ends.
@@ -70,4 +73,4 @@ services:
       - ./nginx/html:/var/www/html # static html web for example
       - ./nginx/log:/var/log/nginx/
     # depends_on:
-    # - api
+    # - cryptonav_api

@@ -39,23 +39,11 @@
 FROM ubuntu:24.04 AS development
 
 # Cài đặt các gói cần thiết
-RUN apt-get update && apt-get install -y curl python3 python3-pip
+RUN apt-get update && apt-get install -y curl git python3 python3-pip
+
 
 # Tạo user vscode
 RUN useradd -ms /bin/bash vscode
-
-# Thiết lập thư mục làm việc
-WORKDIR /workstation
-
-# Sao chép file requirements.txt
-COPY ./fastapi/requirements.txt .
-
-# Sao chép bash script
-COPY script/start.sh /start.sh
-
-# Chuyển quyền sở hữu thư mục cho user vscode
-RUN chown -R vscode:vscode /workspace
-
 # Chuyển sang user vscode
 USER vscode
 
@@ -63,15 +51,25 @@ USER vscode
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
   echo 'export PATH="$HOME/.local/bin:$PATH"' >> $HOME/.bashrc
 
+# Thiết lập thư mục làm việc
+WORKDIR /workspace
+# Chuyển quyền sở hữu thư mục cho user vscode
+RUN chown -R vscode:vscode /workspace
+
 # Tạo virtual environment bằng uv
-RUN /home/vscode/.local/bin/uv venv
+RUN /home/vscode/.local/bin/uv venv /home/vscode/pylinux --python 3.12
+# Thêm virtual environment vào PATH
+ENV PATH="/home/vscode/pylinux/bin:$PATH"
+
+# Sao chép file requirements.txt
+COPY ./fastapi/requirements.txt .
+
 
 # Cài đặt các gói python dependency = sử dụng uv
 RUN /home/vscode/.local/bin/uv pip install -r requirements.txt
 
-# Sử dụng cách gói python cài cũ
-# RUN pip3 install -r requirements.txt
-
+# Sao chép bash script
+COPY ./fastapi/script/setup.sh /setup.sh
 CMD ["bash", "setup.sh"]
 
 # ------------------------------------------------------------------------------
@@ -117,8 +115,9 @@ PyJWT
 python-json-logger
 psycopg2-binary
 alembic
-bcrypt==4.3.0
+passlib
 pytest
+pydantic[email]
 ```
 
 ## File ../fastapi/alembic/env.py:
@@ -185,9 +184,11 @@ from datetime import datetime, timedelta, timezone
 import jwt  # PyJWT library
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-import bcrypt
 from app import config, model, database
+from passlib.context import CryptContext
 
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # Schema OAuth2PasswordBearer để lấy token từ Header Authorization
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
@@ -211,14 +212,12 @@ def create_access_token(data: dict, expires_delta: int = None):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Kiểm tra mật khẩu plaintext với mật khẩu đã băm."""
-    return bcrypt.checkpw(
-        plain_password.encode("utf-8"), hashed_password.encode("utf-8")
-    )
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
     """Băm mật khẩu (hash password) để lưu vào DB."""
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return pwd_context.hash(password)
 
 
 def get_current_user(
