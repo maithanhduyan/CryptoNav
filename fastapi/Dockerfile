@@ -2,23 +2,11 @@
 FROM ubuntu:24.04 AS development
 
 # Cài đặt các gói cần thiết
-RUN apt-get update && apt-get install -y curl python3 python3-pip
+RUN apt-get update && apt-get install -y curl git python3 python3-pip
+
 
 # Tạo user vscode
 RUN useradd -ms /bin/bash vscode
-
-# Thiết lập thư mục làm việc
-WORKDIR /workstation
-
-# Sao chép file requirements.txt
-COPY ./fastapi/requirements.txt .
-
-# Sao chép bash script
-COPY script/start.sh /start.sh
-
-# Chuyển quyền sở hữu thư mục cho user vscode
-RUN chown -R vscode:vscode /workspace
-
 # Chuyển sang user vscode
 USER vscode
 
@@ -26,15 +14,25 @@ USER vscode
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
   echo 'export PATH="$HOME/.local/bin:$PATH"' >> $HOME/.bashrc
 
+# Thiết lập thư mục làm việc
+WORKDIR /workspace
+# Chuyển quyền sở hữu thư mục cho user vscode
+RUN chown -R vscode:vscode /workspace
+
 # Tạo virtual environment bằng uv
-RUN /home/vscode/.local/bin/uv venv
+RUN /home/vscode/.local/bin/uv venv /home/vscode/pylinux --python 3.12
+# Thêm virtual environment vào PATH
+ENV PATH="/home/vscode/pylinux/bin:$PATH"
+
+# Sao chép file requirements.txt
+COPY ./fastapi/requirements.txt .
+
 
 # Cài đặt các gói python dependency = sử dụng uv
 RUN /home/vscode/.local/bin/uv pip install -r requirements.txt
 
-# Sử dụng cách gói python cài cũ
-# RUN pip3 install -r requirements.txt
-
+# Sao chép bash script
+COPY ./fastapi/script/setup.sh /setup.sh
 CMD ["bash", "setup.sh"]
 
 # ------------------------------------------------------------------------------

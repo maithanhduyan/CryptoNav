@@ -38,7 +38,7 @@ services:
     # image: cryptonav-api:lastest
     build:
       context: .
-      dockerfile: ./server/Dockerfile
+      dockerfile: ./fastapi/Dockerfile
       target: development
     ports:
       - "8000:8000"
