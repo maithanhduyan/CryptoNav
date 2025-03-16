@@ -39,57 +39,56 @@
 # Danh sách chi tiết các file:
 
 ## File .\ui\eslint.config.js:
-
 ```javascript
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ['dist'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["**/*.{ts,tsx}"],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
     plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
+      'react-refresh/only-export-components': [
+        'warn',
         { allowConstantExport: true },
       ],
     },
-  }
-);
+  },
+)
+
 ```
 
 ## File .\ui\vite.config.ts:
-
 ```typescript
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  server: {
+  plugins: [react(),tailwindcss(),],
+  server:{
     // host:"0.0.0.0",
     // port:3000
-  },
-});
+  }
+})
+
 ```
 
 ## File .\ui\src\App.tsx:
-
 ```
 import {
   BrowserRouter as Router,
@@ -144,7 +143,6 @@ export default App;
 ```
 
 ## File .\ui\src\main.tsx:
-
 ```
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -162,25 +160,22 @@ createRoot(document.getElementById('root')!).render(
 ```
 
 ## File .\ui\src\vite-env.d.ts:
-
 ```typescript
 /// <reference types="vite/client" />
+
 ```
 
 ## File .\ui\src\components\Header.tsx:
-
 ```
 
 ```
 
 ## File .\ui\src\components\Layout.tsx:
-
 ```
 
 ```
 
 ## File .\ui\src\components\Sidebar.tsx:
-
 ```
 export default function Sidebar() {
   return (
@@ -235,7 +230,6 @@ export default function Sidebar() {
 ```
 
 ## File .\ui\src\context\AuthContext.tsx:
-
 ```
 import { createContext, useState, useContext, useEffect, ReactNode } from "react";
 
@@ -294,7 +288,6 @@ export function useAuth(): AuthContextType {
 ```
 
 ## File .\ui\src\layout\AppHeader.tsx:
-
 ```
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
@@ -336,7 +329,6 @@ export default function Header() {
 ```
 
 ## File .\ui\src\layout\AppLayout.tsx:
-
 ```
 import { ReactNode } from "react";
 import AppSidebar from "./AppSidebar";
@@ -360,7 +352,6 @@ export default function Layout({ children }: LayoutProps) {
 ```
 
 ## File .\ui\src\layout\AppSidebar.tsx:
-
 ```
 export default function Sidebar() {
   return (
@@ -415,7 +406,6 @@ export default function Sidebar() {
 ```
 
 ## File .\ui\src\pages\AuthPages\SignIn.tsx:
-
 ```
 import { useState, FormEvent } from "react";
 import { useAuth } from "../../context/AuthContext";
@@ -491,7 +481,6 @@ export default function SignIn() {
 ```
 
 ## File .\ui\src\pages\AuthPages\SignUp.tsx:
-
 ```
 import { useState, FormEvent } from "react";
 import { useAuth } from "../../context/AuthContext";
@@ -563,7 +552,6 @@ export default function SignUp() {
 ```
 
 ## File .\ui\src\pages\Dashboard\Home.tsx:
-
 ```
 import { useAuth } from "../../context/AuthContext";
 
@@ -600,3 +588,4 @@ export default function Home() {
   );
 }
 ```
+
