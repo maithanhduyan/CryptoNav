@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Create Project Structure",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder}/.tools/project_analyzer.py",
+                "${file}"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clear Python Cache",
+            "type": "shell",
+            "command": "find . -type d -name '__pycache__' -exec rm -r {} +",
+            "windows": {
+                "command": "Get-ChildItem -Path . -Recurse -Directory -Filter __pycache__ | Remove-Item -Recurse -Force",
+                "options": {
+                    "shell": {
+                        "executable": "powershell.exe",
+                        "args": [
+                            "-NoProfile",
+                            "-Command"
+                        ]
+                    }
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Alembic: Auto Revision & Upgrade",
+            "type": "shell",
+            "command": "alembic revision --autogenerate -m \"${input:migrationMessage}\" && alembic upgrade head",
+            "options": {
+                // "cwd": "${workspaceFolder}/"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "migrationMessage",
+            "type": "promptString",
+            "description": "Enter migration description:"
+        }
+    ]
+}
