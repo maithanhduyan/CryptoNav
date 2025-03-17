@@ -60,8 +60,11 @@ services:
     command: /bin/sh -c "while sleep 1000; do :; done"
 
   nginx:
-    image: nginx:latest
+    # image: nginx:latest
     container_name: nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
     restart: always
     ports:
       - "443:443"

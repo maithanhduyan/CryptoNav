@@ -1,0 +1,12 @@
+{
+  "name": "API Container (Python)",
+  "dockerComposeFile": "../../docker-compose.devcontainer.yml",
+  "workspaceFolder": "/home",
+  "service": "nginx",
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  },
+  "shutdownAction": "stopCompose"
+}

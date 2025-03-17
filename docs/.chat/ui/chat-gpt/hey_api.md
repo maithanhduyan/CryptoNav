@@ -258,3 +258,237 @@ Sử dụng `@hey-api/openapi-ts` kết hợp với các công cụ như Axios v
   - Kết hợp thêm React Query và Axios như ví dụ ở trên để tận dụng tối đa sức mạnh của TypeScript và OpenAPI.
 
 Điều này sẽ giúp codebase trở nên chuyên nghiệp, rõ ràng và dễ bảo trì hơn.
+
+---
+
+User Prompt: Cách tự động hóa **@hey-api/openapi-ts** kết hợp với FastAPI tạo client thông qua localhost:8000.
+
+**ChatGPT**:
+
+Dưới đây là hướng dẫn chi tiết cách **tự động hóa** việc tạo client bằng thư viện `@hey-api/openapi-ts` kết hợp với server API là **FastAPI** chạy tại `localhost:8000`.
+
+---
+
+## 🚀 **1. Chuẩn bị**
+
+**Giả sử bạn đã có:**
+
+- Backend API (FastAPI) đang chạy tại: `http://localhost:8000`
+- Định nghĩa OpenAPI sẵn có (mặc định FastAPI cung cấp):
+  - JSON: `http://localhost:8000/openapi.json`
+  - YAML: `http://localhost:8000/openapi.yaml`
+
+---
+
+## ⚙️ **2. Tự động hoá client generation bằng package.json**
+
+Cập nhật file `package.json` trong thư mục frontend (`.\ui\package.json`):
+
+```json
+"scripts": {
+  "dev": "vite",
+  "build": "tsc -p tsconfig.build.json && vite build",
+  "generate-client": "openapi-ts http://localhost:8000/openapi.json --output ./src/api/generated.ts",
+  "dev": "npm run generate-client && vite"
+}
+```
+
+- Lệnh `generate-client` sẽ tải tự động file openapi.json từ server localhost FastAPI và tạo file client TypeScript ở `./src/api/generated.ts`.
+
+### **Giải thích rõ hơn:**
+
+- `http://localhost:8000/openapi.json`: FastAPI cung cấp mặc định endpoint OpenAPI.
+- `./src/api/generated.ts`: nơi lưu file client được tự động sinh ra.
+
+---
+
+## 🖥️ **Tự động chạy client generation mỗi khi backend thay đổi**
+
+Nếu muốn phát triển nhanh hơn (auto reload khi backend cập nhật):
+
+### **Bước 1: Cài đặt thêm thư viện `concurrently` và `nodemon`:**
+
+```bash
+npm install concurrently nodemon -D
+```
+
+### **Bước 2: Thêm script vào `package.json`**
+
+```json
+{
+  "scripts": {
+    "generate-client": "openapi-ts http://localhost:8000/openapi.json --output ./src/api/generated.ts",
+    "watch-client": "nodemon --exec \"npm run generate-client\" --watch ./src/api/generated.ts",
+    "dev": "concurrently \"npm run watch-client\" \"vite\""
+  }
+}
+```
+
+Giải thích:
+
+- `watch-client`: tự động chạy lại `generate-client` mỗi khi file `generated.ts` có sự thay đổi, hoặc bạn cũng có thể cấu hình chạy theo khoảng thời gian nhất định.
+- `dev`: chạy đồng thời vite và watcher của client generation, tạo cảm giác phát triển rất tiện lợi.
+
+---
+
+## ⚡ **Kết quả workflow**
+
+Khi bạn phát triển FastAPI backend và cập nhật endpoint, chỉ cần reload backend (FastAPI), thư viện sẽ sinh ra client TypeScript tương thích mới nhất, và bạn luôn luôn sử dụng được kiểu an toàn phía frontend React + TypeScript.
+
+**Ví dụ về flow làm việc nhanh chóng:**
+
+```
+Backend (FastAPI) update endpoint
+   └──> FastAPI cập nhật tự động /openapi.json
+       └──> nodemon detect thay đổi
+           └──> chạy script generate-client
+               └──> openapi-ts chạy → sinh file generated.ts
+                   └──> Vite frontend auto reload, React nhận được types mới
+```
+
+---
+
+## 📌 **Thực hành khuyến nghị tốt nhất**
+
+- **Bật FastAPI auto-reload**:
+
+```bash
+uvicorn main:app --reload
+```
+
+- **Sử dụng công cụ tự động reload client** (`nodemon`/`concurrently`) như trên.
+- Định kỳ chạy lại `npm run generate-client` thủ công nếu tự động hóa không hoạt động hoặc bị gián đoạn.
+
+---
+
+## 📌 **Các lợi ích rõ ràng của cách này**
+
+- Tiết kiệm thời gian, không cần viết type thủ công.
+- Luôn đồng bộ state frontend và backend một cách an toàn.
+- Dễ phát hiện lỗi và vấn đề sớm ngay trong môi trường dev.
+
+---
+
+✅ **Tổng kết nhanh**  
+Bạn chỉ cần dùng lệnh duy nhất để khởi động mọi thứ tự động hóa:
+
+```bash
+npm run dev
+```
+
+Điều này cung cấp workflow phát triển frontend-backend tối ưu, nhanh chóng và an toàn.
+
+---
+
+User Promt: Dùng `nodejs` download file `openapi.json` về, sau đó mới chạy script `openapi-ts`.
+
+Dưới đây là một script Bash đơn giản và dễ hiểu, sử dụng **Node.js và Axios** (như bạn đã sử dụng sẵn trong dự án) hoặc trực tiếp bằng `curl`, giúp bạn tự động tải file `openapi.json` từ FastAPI backend ở `localhost:8000`, sau đó tự động chạy lệnh `openapi-ts` tạo client TypeScript.
+
+---
+
+## 🚀 **Giải pháp đơn giản (khuyên dùng) - Sử dụng `curl` trực tiếp:**
+
+**Tạo file**: `scripts/generate-client.sh`
+
+```bash
+#!/bin/bash
+
+# Step 1: Download OpenAPI Schema from FastAPI
+curl http://localhost:8000/openapi.json -o openapi.json
+
+# Kiểm tra nếu tải file thành công
+if [ $? -ne 0 ]; then
+  echo "❌ Failed to download openapi.json"
+  exit 1
+fi
+
+echo "✅ Successfully downloaded openapi.json"
+
+# Step tiếp theo: tạo client TypeScript từ file openapi.json
+npm run generate-client
+```
+
+---
+
+## 📝 **Cấu hình script trong `package.json`**
+
+Thêm script tiện lợi vào `package.json`:
+
+```json
+"scripts": {
+  "generate-client": "openapi-ts ./openapi.json --output ./src/api/generated.ts",
+  "fetch-and-generate": "bash ./scripts/fetch-and-generate.sh",
+  "dev": "npm run fetch-and-generate && vite"
+}
+```
+
+---
+
+## 🛠️ **Sử dụng trong thực tế**
+
+Chạy nhanh gọn bằng một câu lệnh:
+
+```bash
+npm run fetch-and-generate
+```
+
+Hoặc kết hợp với chế độ dev (tự động hóa mỗi khi khởi động):
+
+```bash
+npm run dev
+```
+
+---
+
+## 📌 **Script hoàn chỉnh (`scripts/fetch-and-generate.sh`)**
+
+Dưới đây là script hoàn chỉnh (lưu file: `scripts/fetch-and-generate.sh`):
+
+```bash
+#!/bin/bash
+
+# Tải openapi.json từ FastAPI backend
+curl -sS http://localhost:8000/openapi.json -o openapi.json
+
+if [ $? -ne 0 ]; then
+  echo "❌ Failed to download openapi.json"
+  exit 1
+fi
+
+echo "✅ openapi.json downloaded."
+
+# Chạy openapi-ts tạo client
+npx openapi-ts ./openapi.json --output ./src/api/generated.ts
+
+if [ $? -ne 0 ]; then
+  echo "❌ Failed to generate TypeScript client."
+  exit 1
+fi
+
+echo "🚀 Successfully generated TypeScript client."
+```
+
+**Cấp quyền chạy cho script này bằng:**
+
+```bash
+chmod +x scripts/fetch-and-generate.sh
+```
+
+---
+
+## ✅ **Kết quả cuối cùng:**
+
+Sau khi thực hiện các bước trên, bạn chỉ cần chạy một lệnh duy nhất để phát triển liên tục:
+
+```bash
+npm run dev
+```
+
+Mỗi lần backend FastAPI thay đổi, chạy lại `npm run fetch-and-generate` hoặc `npm run dev`, bạn sẽ luôn luôn có client API cập nhật mới nhất với TypeScript.
+
+---
+
+## 🌟 **Kết luận và khuyến nghị**
+
+- Phương pháp dùng **`curl` kết hợp với script Bash và openapi-ts** rất hiệu quả và tối ưu về hiệu năng, nhanh gọn, dễ tự động hóa trong workflow.
+- Nên áp dụng vào dự án để giảm lỗi, tăng tốc độ và đảm bảo luôn cập nhật chính xác schema từ backend.
