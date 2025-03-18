@@ -9,11 +9,6 @@ import AppLayout from "./layout/AppLayout";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 
-// Định nghĩa kiểu cho props của Layout (nếu cần trong tương lai)
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
 function App() {
   const { token } = useAuth();
 
@@ -46,4 +41,3 @@ function App() {
 
 export default App;
 
-// Import các component SignIn và SignUp (giả định chúng đã được chuyển sang .tsx)

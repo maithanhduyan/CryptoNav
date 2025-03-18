@@ -10,8 +10,6 @@
 ├── openapi-ts.config.ts
 ├── package-lock.json
 ├── package.json
-├── script
-│   └── generate-client.sh
 ├── src
 │   ├── App.tsx
 │   ├── client

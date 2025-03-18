@@ -1,12 +1,13 @@
-import { ReactNode } from "react";
-import AppSidebar from "./AppSidebar";
-import AppHeader from "./AppHeader";
+// src/layout/AppLayout.tsx
+import { ReactNode } from 'react';
+import AppSidebar from './AppSidebar';
+import AppHeader from './AppHeader';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function AppLayout({ children }: LayoutProps) {
   return (
     <div className="flex flex-col h-screen bg-gray-950">
       <AppHeader />

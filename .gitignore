@@ -178,3 +178,4 @@ postgresql/data/
 certbot/
 nginx/log/
 nginx/cache/
+pgadmin/

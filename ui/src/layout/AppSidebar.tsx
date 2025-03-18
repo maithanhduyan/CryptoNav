@@ -1,47 +1,34 @@
-export default function Sidebar() {
+import { Link } from "react-router-dom";
+
+export default function AppSidebar() {
   return (
     <aside className="w-64 bg-gray-900 border-r border-gray-800">
       <nav className="mt-4">
         <ul>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Dashboard
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/portfolio" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Portfolio
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/transactions" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Transactions
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/analytics" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               AI Analytics
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/settings" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Settings
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
