@@ -1,7 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { loginUsersLoginPost } from "../../client/sdk.gen";
 
 export default function SignIn() {
   const [username, setUsername] = useState<string>("");
@@ -12,23 +12,23 @@ export default function SignIn() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError("");
     try {
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("password", password);
+      const response = await loginUsersLoginPost({
+        query: { username, password },
+      });
 
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/token",
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-
-      const { access_token } = response.data;
-      signIn(username, access_token);
-      localStorage.setItem("token", access_token);
-      navigate("/dashboard");
+      // Giả sử API trả về access_token trong response.data
+      const { access_token } = response.data || {};
+      if (access_token) {
+        signIn(username, access_token);
+        navigate("/dashboard");
+      } else {
+        setError("Login failed: access token not found");
+      }
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Invalid username or password");
+      console.error("Login error:", err);
+      setError(err.message || "Login failed");
     }
   };
 

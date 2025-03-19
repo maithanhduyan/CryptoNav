@@ -4,6 +4,7 @@
 ../ui
 ├── .devcontainer
 │   └── devcontainer.json
+├── .dockerignore
 ├── Dockerfile
 ├── eslint.config.js
 ├── index.html
@@ -33,6 +34,12 @@
 │   │   └── Dashboard
 │   │       └── Home.tsx
 │   └── vite-env.d.ts
+├── test
+│   └── scripts
+│       ├── api-health-check.sh
+│       ├── login.sh
+│       ├── openapi.sh
+│       └── register.sh
 ├── tsconfig.app.json
 ├── tsconfig.json
 ├── tsconfig.node.json
@@ -81,7 +88,7 @@ export default tseslint.config(
 import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-  input: 'http://nginx/api/openapi.json',
+  input: 'http://cryptonav_api:8000/openapi.json',
   output: 'src/client',
   plugins: ['@hey-api/client-fetch'],
 });
@@ -99,6 +106,7 @@ export default defineConfig({
   server:{
     // host:"0.0.0.0",
     // port:3000
+    allowedHosts: ["cryptonav.local"]
   }
 })
 
@@ -117,14 +125,9 @@ import AppLayout from "./layout/AppLayout";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 
-// Định nghĩa kiểu cho props của Layout (nếu cần trong tương lai)
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
 function App() {
   const { token } = useAuth();
-
+  const { user } = useAuth();
   return (
     <Router>
       <Routes>
@@ -137,7 +140,7 @@ function App() {
               <AppLayout>
                 <div className="p-6 text-white">
                   <h2 className="text-2xl font-semibold">
-                    Welcome to CryptoNav
+                    Welcome to CryptoNav  {user?.username || "User"}!
                   </h2>
                   <p>Your crypto portfolio management dashboard.</p>
                 </div>
@@ -154,7 +157,6 @@ function App() {
 
 export default App;
 
-// Import các component SignIn và SignUp (giả định chúng đã được chuyển sang .tsx)
 
 ```
 
@@ -165,6 +167,18 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from "./context/AuthContext.tsx";
+import { client } from './client/client.gen';
+
+// configure internal service client
+// client.setConfig({
+//   // set default base url for requests
+//   baseUrl: 'http://localhost/api',
+//   // set default headers for requests
+//   headers: {
+//     Authorization: 'Bearer <token_from_service_client>',
+//   },
+// });
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
@@ -199,7 +213,7 @@ import { type Config, type ClientOptions as DefaultClientOptions, createClient, 
 export type CreateClientConfig<T extends DefaultClientOptions = ClientOptions> = (override?: Config<DefaultClientOptions & T>) => Config<Required<DefaultClientOptions> & T>;
 
 export const client = createClient(createConfig<ClientOptions>({
-    baseUrl: 'http://nginx'
+    baseUrl: 'http://cryptonav_api:8000'
 }));
 ```
 
@@ -998,13 +1012,15 @@ export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses 
 export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponse = TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses[keyof TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://nginx' | (string & {});
+    baseUrl: 'http://cryptonav_api:8000' | (string & {});
 };
 ```
 
 ## File ../ui/src/context/AuthContext.tsx:
 ```
 import { createContext, useState, useContext, useEffect, ReactNode } from "react";
+
+
 
 interface AuthContextType {
   user: { username: string } | null;
@@ -1062,56 +1078,46 @@ export function useAuth(): AuthContextType {
 
 ## File ../ui/src/layout/AppHeader.tsx:
 ```
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router";
+// src/layout/AppHeader.tsx
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-export default function Header() {
+export default function AppHeader() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignOut = () => {
+  const handleLogout = () => {
     signOut();
-    navigate("/signin");
+    navigate('/signin');
   };
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
-      <h1 className="text-white text-xl font-semibold">CryptoNav</h1>
-      <nav>
-        <a href="#" className="text-gray-300 hover:text-white px-3">
-          Dashboard
-        </a>
-        <a href="#" className="text-gray-500 hover:text-white ml-4">
-          Portfolio
-        </a>
-        <a href="#" className="text-gray-500 hover:text-white ml-4">
-          Settings
-        </a>
-        {user && (
-          <button
-            onClick={handleSignOut}
-            className="text-gray-500 hover:text-white ml-4"
-          >
-            Sign Out
-          </button>
-        )}
-      </nav>
+    <header className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex justify-between items-center">
+      <h1 className="text-white font-semibold text-xl">CryptoNav</h1>
+      <div className="flex items-center space-x-4">
+        <span className="text-gray-400">Hi, {user?.username}</span>
+        <button onClick={handleLogout} className="text-gray-300 hover:text-white">
+          Sign out
+        </button>
+      </div>
     </header>
   );
 }
+
 ```
 
 ## File ../ui/src/layout/AppLayout.tsx:
 ```
-import { ReactNode } from "react";
-import AppSidebar from "./AppSidebar";
-import AppHeader from "./AppHeader";
+// src/layout/AppLayout.tsx
+import { ReactNode } from 'react';
+import AppSidebar from './AppSidebar';
+import AppHeader from './AppHeader';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function AppLayout({ children }: LayoutProps) {
   return (
     <div className="flex flex-col h-screen bg-gray-950">
       <AppHeader />
@@ -1122,60 +1128,49 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
 ```
 
 ## File ../ui/src/layout/AppSidebar.tsx:
 ```
-export default function Sidebar() {
+import { Link } from "react-router-dom";
+
+export default function AppSidebar() {
   return (
     <aside className="w-64 bg-gray-900 border-r border-gray-800">
       <nav className="mt-4">
         <ul>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Dashboard
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/portfolio" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Portfolio
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/transactions" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Transactions
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/analytics" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               AI Analytics
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#"
-              className="block px-4 py-2 text-gray-300 hover:bg-gray-800"
-            >
+            <Link to="/settings" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
               Settings
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
     </aside>
   );
 }
+
 ```
 
 ## File ../ui/src/pages/AuthPages/SignIn.tsx:
@@ -1200,9 +1195,9 @@ export default function SignIn() {
       formData.append("password", password);
 
       const response = await axios.post(
-        "http://localhost:8000/api/auth/token",
+        "http://localhost:8000/users/login",
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { "Content-Type": "application/json" } }
       );
 
       const { access_token } = response.data;
@@ -1255,73 +1250,72 @@ export default function SignIn() {
 
 ## File ../ui/src/pages/AuthPages/SignUp.tsx:
 ```
-import { useState, FormEvent } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router";
+import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { registerUserUsersRegisterPost } from '../../client/sdk.gen';
 
 export default function SignUp() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const { signUp } = useAuth();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
+    setError('');
+    try {
+      // Gọi API đăng ký sử dụng openapi-ts
+      await registerUserUsersRegisterPost({
+        query: { username, email, password },
+      });
+      // Sau khi đăng ký thành công, chuyển hướng về trang đăng nhập
+      navigate('/signin');
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      setError(err.message || 'Registration failed');
     }
-    // Gọi hàm signUp từ AuthContext (giả định trả về void hoặc boolean)
-    signUp(email, password); // Trong thực tế, bạn có thể cần điều chỉnh logic này nếu signUp trả về Promise hoặc giá trị khác
-    navigate("/"); // Chuyển hướng sau khi đăng ký thành công
   };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-900">
       <div className="bg-gray-800 rounded-xl p-8 shadow-md w-full max-w-sm">
-        <h2 className="text-white text-xl font-bold">Create an Account</h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <h2 className="text-white text-xl font-bold">Create Account</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100"
+          />
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 mt-4"
+            className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 mt-4"
+            className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100"
           />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 mt-4"
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-400">{error}</p>}
           <button
             type="submit"
-            className="w-full mt-4 bg-green-600 text-white py-2 rounded-md hover:bg-green-500"
+            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-500"
           >
             Sign Up
           </button>
-          <p className="text-gray-400 text-sm text-center mt-4">
-            Already have an account?{" "}
-            <a href="/signin" className="text-blue-400 hover:underline">
-              Sign In
-            </a>
-          </p>
         </form>
       </div>
     </div>
   );
 }
+
 ```
 
 ## File ../ui/src/pages/Dashboard/Home.tsx:

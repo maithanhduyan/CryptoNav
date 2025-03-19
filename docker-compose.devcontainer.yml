@@ -8,24 +8,34 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - ./postgresql/data:/var/lib/postgresql/data
     restart: always
+    networks:
+      - common_net
+      # - default
 
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
+    env_file:
+      - .env
     environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
-      PGADMIN_DEFAULT_PASSWORD: pgadminpwd
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
     volumes:
       - ./pgadmin:/var/lib/pgadmin
     depends_on:
       - db
+    networks:
+      - common_net
+      # - default
 
   cryptonav_ui:
     container_name: cryptonav_ui
@@ -34,8 +44,10 @@ services:
       context: .
       dockerfile: ./ui/Dockerfile
       target: development
-    ports:
-      - "5173:5173"
+    # ports:
+    #   - "5173:5173"
+    env_file:
+      - .env
     volumes:
       # Mount the root folder that contains .git
       - .:/workspace:cached
@@ -44,8 +56,10 @@ services:
     restart: unless-stopped
 
     # Overrides default command so things don't shut down after the process ends.
-    # command: sleep infinity
     command: /bin/sh -c "while sleep 1000; do :; done"
+    networks:
+      - common_net
+      # - default
 
   cryptonav_api:
     container_name: cryptonav_api
@@ -54,12 +68,14 @@ services:
       context: .
       dockerfile: ./fastapi/Dockerfile
       target: development
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
+    env_file:
+      - .env
     environment:
       ENVIRONMENT: "development" # or "production"
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY} # nên thay bằng khóa thực sự và bảo mật
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       LOG_LEVEL: "INFO"
     volumes:
       # Mount the root folder that contains .git
@@ -67,9 +83,11 @@ services:
     depends_on:
       - db
     restart: unless-stopped
+    networks:
+      - common_net
+      # - default
 
     # Overrides default command so things don't shut down after the process ends.
-    # command: sleep infinity
     command: /bin/sh -c "while sleep 1000; do :; done"
 
   nginx:
@@ -89,4 +107,14 @@ services:
       - ./nginx/html:/var/www/html # static html web for example
       - ./nginx/log:/var/log/nginx/
     # depends_on:
-    # - cryptonav_api
+    #   - cryptonav_api
+    #   - cryptonav_ui
+    networks:
+      # - default
+      common_net:
+        aliases:
+          - ${DOMAIN_NAME}
+
+networks:
+  common_net:
+    driver: bridge

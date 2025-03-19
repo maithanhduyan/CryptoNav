@@ -1,4 +1,3 @@
-// src/pages/AuthPages/SignUp.tsx
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUserUsersRegisterPost } from '../../client/sdk.gen';
@@ -12,13 +11,16 @@ export default function SignUp() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError('');
     try {
+      // Gọi API đăng ký sử dụng openapi-ts
       await registerUserUsersRegisterPost({
         query: { username, email, password },
       });
-
+      // Sau khi đăng ký thành công, chuyển hướng về trang đăng nhập
       navigate('/signin');
     } catch (err: any) {
+      console.error("Registration error:", err);
       setError(err.message || 'Registration failed');
     }
   };
@@ -50,7 +52,10 @@ export default function SignUp() {
             className="w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100"
           />
           {error && <p className="text-red-400">{error}</p>}
-          <button className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-500">
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-500"
+          >
             Sign Up
           </button>
         </form>

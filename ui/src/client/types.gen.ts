@@ -525,5 +525,5 @@ export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses 
 export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponse = TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses[keyof TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://nginx' | (string & {});
+    baseUrl: 'http://cryptonav.local' | (string & {});
 };

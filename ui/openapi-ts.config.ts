@@ -3,7 +3,7 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-  input: 'http://nginx/api/openapi.json',
+  input: 'http://cryptonav.local/api/openapi.json',
   output: 'src/client',
   plugins: ['@hey-api/client-fetch'],
 });

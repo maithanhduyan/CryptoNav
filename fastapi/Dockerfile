@@ -2,7 +2,10 @@
 FROM ubuntu:24.04 AS development
 
 # Cài đặt các gói cần thiết
-RUN apt-get update && apt-get install -y curl git python3 python3-pip
+RUN apt update && apt install -y curl git && \
+  curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+  apt install -y nodejs \
+  python3 python3-pip
 
 
 # Tạo user vscode

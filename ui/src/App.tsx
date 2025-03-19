@@ -11,7 +11,7 @@ import SignUp from "./pages/AuthPages/SignUp";
 
 function App() {
   const { token } = useAuth();
-
+  const { user } = useAuth();
   return (
     <Router>
       <Routes>
@@ -24,7 +24,7 @@ function App() {
               <AppLayout>
                 <div className="p-6 text-white">
                   <h2 className="text-2xl font-semibold">
-                    Welcome to CryptoNav
+                    Welcome to CryptoNav  {user?.username || "User"}!
                   </h2>
                   <p>Your crypto portfolio management dashboard.</p>
                 </div>
