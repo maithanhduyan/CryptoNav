@@ -1,27 +1,25 @@
-import { useState, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { registerUserUsersRegisterPost } from '../../client/sdk.gen';
+import { useState, FormEvent } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     try {
-      // Gọi API đăng ký sử dụng openapi-ts
-      await registerUserUsersRegisterPost({
-        query: { username, email, password },
-      });
+      await register(username, email, password);
       // Sau khi đăng ký thành công, chuyển hướng về trang đăng nhập
       navigate('/signin');
     } catch (err: any) {
       console.error("Registration error:", err);
-      setError(err.message || 'Registration failed');
+      setError(err.message || "Registration failed");
     }
   };
 

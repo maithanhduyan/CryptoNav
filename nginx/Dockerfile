@@ -1,7 +1,7 @@
 FROM nginx:latest
 
 # Cài đặt logrotate
-RUN apt-get update && apt-get install -y logrotate cron
+RUN apt-get update && apt-get install -y logrotate cron 
 
 # Copy cấu hình logrotate vào image
 COPY ./nginx/logrotate/logrotate.conf /etc/logrotate.d/nginx

@@ -1,5 +1,8 @@
 # API Server
 
+- Build API
+  > docker build --pull --rm -f "fastapi\Dockerfile" -t "cryptonav_api:latest" "fastapi"
+
 # UI
 
 - Build

@@ -8,6 +8,6 @@ export default defineConfig({
   server:{
     host:"0.0.0.0",
     // port:3000
-    allowedHosts: ["cryptonav.local"]
+    allowedHosts: ["cryptonav.local","192.168.210.191","localhost",]
   }
 })

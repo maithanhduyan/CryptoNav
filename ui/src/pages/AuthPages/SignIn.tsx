@@ -1,31 +1,20 @@
 import { useState, FormEvent } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { loginUsersLoginPost } from "../../client/sdk.gen";
 
 export default function SignIn() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const { signIn } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      const response = await loginUsersLoginPost({
-        query: { username, password },
-      });
-
-      // Giả sử API trả về access_token trong response.data
-      const { access_token } = response.data || {};
-      if (access_token) {
-        signIn(username, access_token);
-        navigate("/dashboard");
-      } else {
-        setError("Login failed: access token not found");
-      }
+      await login(username, password);
+      navigate("/dashboard");
     } catch (err: any) {
       console.error("Login error:", err);
       setError(err.message || "Login failed");
