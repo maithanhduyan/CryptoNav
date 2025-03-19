@@ -39,11 +39,12 @@ services:
 
   cryptonav_ui:
     container_name: cryptonav_ui
-    # image: cryptonav_ui:lastest
-    build:
-      context: .
-      dockerfile: ./ui/Dockerfile
-      target: development
+    image: cryptonav_ui:latest
+    # build:
+    #   context: .
+    #   dockerfile: ./ui/Dockerfile
+    #   # target: development
+    #   target: build
     # ports:
     #   - "5173:5173"
     env_file:

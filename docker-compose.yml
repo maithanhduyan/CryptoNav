@@ -5,7 +5,19 @@ services:
     image: cryptonav-api:lastest
     container_name: cryptonav-api
     ports:
-      - "8000:8000"   # ánh xạ cổng API (nếu ứng dụng chạy trên cổng 8000)
+      - "8000:8000" # ánh xạ cổng API (nếu ứng dụng chạy trên cổng 8000)
+    restart: unless-stopped
+
+  cryptonav_ui:
+    container_name: cryptonav_ui
+    image: cryptonav_ui:latest
+    ports:
+      - "5173:5173"
+    # volumes:
+    # Mount the root folder that contains .git
+    # - .:/workspace:cached
+    # depends_on:
+    #   - cryptonav_api
     restart: unless-stopped
 
   nginx:
