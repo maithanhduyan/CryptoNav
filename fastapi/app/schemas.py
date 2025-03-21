@@ -23,26 +23,6 @@ class UserResponse(UserBase):
         orm_mode = True
 
 
-# --- Item schemas ---
-
-
-class ItemBase(BaseModel):
-    title: str
-    description: Optional[str] = None
-
-
-class ItemCreate(ItemBase):
-    pass
-
-
-class ItemResponse(ItemBase):
-    id: int
-    owner_id: int
-
-    class Config:
-        orm_mode = True
-
-
 # --- Asset schemas ---
 
 

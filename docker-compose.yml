@@ -1,18 +1,39 @@
 version: "3"
 
 services:
-  cryptonav-api:
-    image: cryptonav-api:lastest
-    container_name: cryptonav-api
-    ports:
-      - "8000:8000" # ánh xạ cổng API (nếu ứng dụng chạy trên cổng 8000)
+  db:
+    image: postgres:latest
+    container_name: db
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    # ports:
+    #   - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always
+
+  api:
+    container_name: cryptonav_api
+    image: cryptonav_api:latest
+    # build:
+    #   context: ./
+    #   dockerfile: ./fastapi/Dockerfile
+    # ports:
+    #   - "8000:8000" # ánh xạ cổng API (nếu ứng dụng chạy trên cổng 8000)
     restart: unless-stopped
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    depends_on:
+      - db
 
   cryptonav_ui:
     container_name: cryptonav_ui
     image: cryptonav_ui:latest
-    ports:
-      - "5173:5173"
+    # ports:
+    #   - "5173:5173"
     # volumes:
     # Mount the root folder that contains .git
     # - .:/workspace:cached

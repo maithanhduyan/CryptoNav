@@ -39,7 +39,10 @@
 FROM ubuntu:24.04 AS development
 
 # Cài đặt các gói cần thiết
-RUN apt-get update && apt-get install -y curl git python3 python3-pip
+RUN apt update && apt install -y curl git && \
+  curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+  apt install -y nodejs \
+  python3 python3-pip
 
 
 # Tạo user vscode
@@ -73,35 +76,53 @@ COPY ./fastapi/script/setup.sh /setup.sh
 CMD ["bash", "setup.sh"]
 
 # ------------------------------------------------------------------------------
+# PRODUCTION Dockerfile
+# ------------------------------------------------------------------------------
 FROM ubuntu:24.04 AS production
 
-# Cập nhật và cài đặt Python3, pip, và các phụ thuộc cần thiết (ví dụ psycopg2)
-RUN apt-get update && apt-get install -y python3 python3-pip build-essential libpq-dev
+# 1. Cài đặt gói cần thiết: python3, pip, curl
+RUN apt-get update && apt-get install -y \
+  python3 \
+  python3-pip \
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
-# Tạo thư mục làm việc
+# 2. Thiết lập PATH để có thể gọi uv từ ~/.local/bin
+ENV PATH="/root/.local/bin:$PATH"
+
+# 3. Cài đặt uv (script cài đặt từ astral.sh)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 4. Tạo thư mục làm việc cho app
 WORKDIR /app
 
-# Sao chép file yêu cầu (để cài đặt thư viện Python)
-COPY ./fastapi/requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+# 5. Sao chép file yêu cầu Python (requirements.txt) và cài đặt trong venv
+COPY requirements.txt ./
 
-# Sao chép mã nguồn của ứng dụng vào image
+# Tạo venv ở /root/venv (hoặc tuỳ ý) và cài đặt dependencies bằng uv pip
+RUN uv venv /home/venv 
+# Thêm virtual environment vào PATH
+ENV PATH="/home/venv/bin:$PATH"
+# Cài đặt các gói python dependency = sử dụng uv
+RUN uv pip install -r requirements.txt
+
+# 6.Sao chép mã nguồn của ứng dụng vào image
 COPY app/ ./app
 COPY alembic/ ./alembic
 COPY alembic.ini .
 
-# Sử dụng biến môi trường để xác định chế độ (dev hay prod)
+# 7.Sử dụng biến môi trường để xác định chế độ (dev hay prod)
 ARG ENVIRONMENT=production
 ENV ENVIRONMENT=${ENVIRONMENT}
 
-# Mặc định, expose cổng 8000 (ứng dụng FastAPI sẽ chạy trên cổng này)
-EXPOSE 8000
-
-# Sao chép script khởi động (script này sẽ kiểm tra ENVIRONMENT để chạy tương ứng)
-COPY start.sh /start.sh
+# 8. Copy script khởi động & cấp quyền thực thi
+COPY ./script/start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Điểm khởi chạy container: chạy script start.sh
+# 9. Mặc định expose cổng 8000 (FastAPI)
+EXPOSE 8000
+
+# 10. Điểm khởi chạy container: chạy script start.sh
 ENTRYPOINT ["/start.sh"]
 ```
 

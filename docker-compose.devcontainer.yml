@@ -39,14 +39,13 @@ services:
 
   cryptonav_ui:
     container_name: cryptonav_ui
-    image: cryptonav_ui:latest
-    # build:
-    #   context: .
-    #   dockerfile: ./ui/Dockerfile
-    #   # target: development
-    #   target: build
-    # ports:
-    #   - "5173:5173"
+    # image: cryptonav_ui:latest
+    build:
+      context: .
+      dockerfile: ./ui/Dockerfile
+      target: development
+    ports:
+      - "5173:5173"
     env_file:
       - .env
     volumes:
@@ -69,8 +68,8 @@ services:
       context: .
       dockerfile: ./fastapi/Dockerfile
       target: development
-    # ports:
-    #   - "8000:8000"
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     environment:
@@ -101,9 +100,11 @@ services:
     ports:
       - "443:443"
       - "80:80"
+    env_file:
+      - .env
     volumes:
       - ./nginx/conf/nginx.conf:/etc/nginx/conf.d/default.conf:ro # Gắn file cấu hình nginx
-      - ./nginx/cache:/var/cache/nginx # Tùy chọn: gắn thư mục cache để giữ cache
+      # - ./nginx/cache:/var/cache/nginx # Tùy chọn: gắn thư mục cache để giữ cache
       - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
       - ./nginx/html:/var/www/html # static html web for example
       - ./nginx/log:/var/log/nginx/

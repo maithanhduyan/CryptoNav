@@ -17,18 +17,6 @@ export type HttpValidationError = {
     detail?: Array<ValidationError>;
 };
 
-export type ItemCreate = {
-    title: string;
-    description?: string | null;
-};
-
-export type ItemResponse = {
-    title: string;
-    description?: string | null;
-    id: number;
-    owner_id: number;
-};
-
 export type PortfolioCreate = {
     name: string;
     description?: string | null;
@@ -60,6 +48,19 @@ export type TransactionResponse = {
     transaction_type: string;
     transaction_date?: string | null;
     id: number;
+};
+
+export type UserCreate = {
+    username: string;
+    email: string;
+    password: string;
+};
+
+export type UserResponse = {
+    username: string;
+    email: string;
+    id: number;
+    is_active: boolean;
 };
 
 export type ValidationError = {
@@ -97,13 +98,9 @@ export type HealthCheckHealthGetResponses = {
 };
 
 export type RegisterUserUsersRegisterPostData = {
-    body?: never;
+    body: UserCreate;
     path?: never;
-    query: {
-        username: string;
-        email: string;
-        password: string;
-    };
+    query?: never;
     url: '/users/register';
 };
 
@@ -120,8 +117,10 @@ export type RegisterUserUsersRegisterPostResponses = {
     /**
      * Successful Response
      */
-    201: unknown;
+    201: UserResponse;
 };
+
+export type RegisterUserUsersRegisterPostResponse = RegisterUserUsersRegisterPostResponses[keyof RegisterUserUsersRegisterPostResponses];
 
 export type LoginUsersLoginPostData = {
     body?: never;
@@ -149,6 +148,22 @@ export type LoginUsersLoginPostResponses = {
     200: unknown;
 };
 
+export type DeleteUserUsersMeDeleteData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/users/me';
+};
+
+export type DeleteUserUsersMeDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteUserUsersMeDeleteResponse = DeleteUserUsersMeDeleteResponses[keyof DeleteUserUsersMeDeleteResponses];
+
 export type ReadCurrentUserUsersMeGetData = {
     body?: never;
     path?: never;
@@ -160,131 +175,93 @@ export type ReadCurrentUserUsersMeGetResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: UserResponse;
 };
 
-export type GetItemsItemsGetData = {
+export type ReadCurrentUserUsersMeGetResponse = ReadCurrentUserUsersMeGetResponses[keyof ReadCurrentUserUsersMeGetResponses];
+
+export type UpdateUserUsersMePutData = {
     body?: never;
     path?: never;
-    query?: never;
-    url: '/items/';
-};
-
-export type GetItemsItemsGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: Array<ItemResponse>;
-};
-
-export type GetItemsItemsGetResponse = GetItemsItemsGetResponses[keyof GetItemsItemsGetResponses];
-
-export type CreateItemItemsPostData = {
-    body: ItemCreate;
-    path?: never;
-    query?: never;
-    url: '/items/';
-};
-
-export type CreateItemItemsPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CreateItemItemsPostError = CreateItemItemsPostErrors[keyof CreateItemItemsPostErrors];
-
-export type CreateItemItemsPostResponses = {
-    /**
-     * Successful Response
-     */
-    201: ItemResponse;
-};
-
-export type CreateItemItemsPostResponse = CreateItemItemsPostResponses[keyof CreateItemItemsPostResponses];
-
-export type DeleteItemItemsItemIdDeleteData = {
-    body?: never;
-    path: {
-        item_id: number;
-    };
-    query?: never;
-    url: '/items/{item_id}';
-};
-
-export type DeleteItemItemsItemIdDeleteErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type DeleteItemItemsItemIdDeleteError = DeleteItemItemsItemIdDeleteErrors[keyof DeleteItemItemsItemIdDeleteErrors];
-
-export type DeleteItemItemsItemIdDeleteResponses = {
-    /**
-     * Successful Response
-     */
-    204: void;
-};
-
-export type DeleteItemItemsItemIdDeleteResponse = DeleteItemItemsItemIdDeleteResponses[keyof DeleteItemItemsItemIdDeleteResponses];
-
-export type ReadItemItemsItemIdGetData = {
-    body?: never;
-    path: {
-        item_id: number;
-    };
-    query?: never;
-    url: '/items/{item_id}';
-};
-
-export type ReadItemItemsItemIdGetErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type ReadItemItemsItemIdGetError = ReadItemItemsItemIdGetErrors[keyof ReadItemItemsItemIdGetErrors];
-
-export type ReadItemItemsItemIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: ItemResponse;
-};
-
-export type ReadItemItemsItemIdGetResponse = ReadItemItemsItemIdGetResponses[keyof ReadItemItemsItemIdGetResponses];
-
-export type UpdateItemItemsItemIdPutData = {
-    body?: never;
-    path: {
-        item_id: number;
-    };
     query?: {
-        title?: string;
-        description?: string;
+        email?: string;
+        password?: string;
     };
-    url: '/items/{item_id}';
+    url: '/users/me';
 };
 
-export type UpdateItemItemsItemIdPutErrors = {
+export type UpdateUserUsersMePutErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type UpdateItemItemsItemIdPutError = UpdateItemItemsItemIdPutErrors[keyof UpdateItemItemsItemIdPutErrors];
+export type UpdateUserUsersMePutError = UpdateUserUsersMePutErrors[keyof UpdateUserUsersMePutErrors];
 
-export type UpdateItemItemsItemIdPutResponses = {
+export type UpdateUserUsersMePutResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: UserResponse;
 };
+
+export type UpdateUserUsersMePutResponse = UpdateUserUsersMePutResponses[keyof UpdateUserUsersMePutResponses];
+
+export type ReadUsersUsersGetData = {
+    body?: never;
+    path?: never;
+    query?: {
+        skip?: number;
+        limit?: number;
+    };
+    url: '/users/';
+};
+
+export type ReadUsersUsersGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadUsersUsersGetError = ReadUsersUsersGetErrors[keyof ReadUsersUsersGetErrors];
+
+export type ReadUsersUsersGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: Array<UserResponse>;
+};
+
+export type ReadUsersUsersGetResponse = ReadUsersUsersGetResponses[keyof ReadUsersUsersGetResponses];
+
+export type ReadUserUsersUserIdGetData = {
+    body?: never;
+    path: {
+        user_id: number;
+    };
+    query?: never;
+    url: '/users/{user_id}';
+};
+
+export type ReadUserUsersUserIdGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadUserUsersUserIdGetError = ReadUserUsersUserIdGetErrors[keyof ReadUserUsersUserIdGetErrors];
+
+export type ReadUserUsersUserIdGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserResponse;
+};
+
+export type ReadUserUsersUserIdGetResponse = ReadUserUsersUserIdGetResponses[keyof ReadUserUsersUserIdGetResponses];
 
 export type ReadAssetsAssetsGetData = {
     body?: never;
@@ -334,10 +311,37 @@ export type CreateAssetAssetsPostResponses = {
     /**
      * Successful Response
      */
-    200: AssetResponse;
+    201: AssetResponse;
 };
 
 export type CreateAssetAssetsPostResponse = CreateAssetAssetsPostResponses[keyof CreateAssetAssetsPostResponses];
+
+export type DeleteAssetAssetsAssetIdDeleteData = {
+    body?: never;
+    path: {
+        asset_id: number;
+    };
+    query?: never;
+    url: '/assets/{asset_id}';
+};
+
+export type DeleteAssetAssetsAssetIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteAssetAssetsAssetIdDeleteError = DeleteAssetAssetsAssetIdDeleteErrors[keyof DeleteAssetAssetsAssetIdDeleteErrors];
+
+export type DeleteAssetAssetsAssetIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteAssetAssetsAssetIdDeleteResponse = DeleteAssetAssetsAssetIdDeleteResponses[keyof DeleteAssetAssetsAssetIdDeleteResponses];
 
 export type ReadAssetAssetsAssetIdGetData = {
     body?: never;
@@ -366,6 +370,33 @@ export type ReadAssetAssetsAssetIdGetResponses = {
 
 export type ReadAssetAssetsAssetIdGetResponse = ReadAssetAssetsAssetIdGetResponses[keyof ReadAssetAssetsAssetIdGetResponses];
 
+export type UpdateAssetAssetsAssetIdPutData = {
+    body: AssetCreate;
+    path: {
+        asset_id: number;
+    };
+    query?: never;
+    url: '/assets/{asset_id}';
+};
+
+export type UpdateAssetAssetsAssetIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateAssetAssetsAssetIdPutError = UpdateAssetAssetsAssetIdPutErrors[keyof UpdateAssetAssetsAssetIdPutErrors];
+
+export type UpdateAssetAssetsAssetIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: AssetResponse;
+};
+
+export type UpdateAssetAssetsAssetIdPutResponse = UpdateAssetAssetsAssetIdPutResponses[keyof UpdateAssetAssetsAssetIdPutResponses];
+
 export type CreatePortfolioPortfoliosPostData = {
     body: PortfolioCreate;
     path?: never;
@@ -386,10 +417,37 @@ export type CreatePortfolioPortfoliosPostResponses = {
     /**
      * Successful Response
      */
-    200: PortfolioResponse;
+    201: PortfolioResponse;
 };
 
 export type CreatePortfolioPortfoliosPostResponse = CreatePortfolioPortfoliosPostResponses[keyof CreatePortfolioPortfoliosPostResponses];
+
+export type DeletePortfolioPortfoliosPortfolioIdDeleteData = {
+    body?: never;
+    path: {
+        portfolio_id: number;
+    };
+    query?: never;
+    url: '/portfolios/{portfolio_id}';
+};
+
+export type DeletePortfolioPortfoliosPortfolioIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeletePortfolioPortfoliosPortfolioIdDeleteError = DeletePortfolioPortfoliosPortfolioIdDeleteErrors[keyof DeletePortfolioPortfoliosPortfolioIdDeleteErrors];
+
+export type DeletePortfolioPortfoliosPortfolioIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeletePortfolioPortfoliosPortfolioIdDeleteResponse = DeletePortfolioPortfoliosPortfolioIdDeleteResponses[keyof DeletePortfolioPortfoliosPortfolioIdDeleteResponses];
 
 export type ReadPortfolioPortfoliosPortfolioIdGetData = {
     body?: never;
@@ -418,32 +476,51 @@ export type ReadPortfolioPortfoliosPortfolioIdGetResponses = {
 
 export type ReadPortfolioPortfoliosPortfolioIdGetResponse = ReadPortfolioPortfoliosPortfolioIdGetResponses[keyof ReadPortfolioPortfoliosPortfolioIdGetResponses];
 
-export type ReadUserPortfoliosPortfoliosUserUserIdGetData = {
+export type UpdatePortfolioPortfoliosPortfolioIdPutData = {
     body?: never;
     path: {
-        user_id: number;
+        portfolio_id: number;
     };
-    query?: never;
-    url: '/portfolios/user/{user_id}';
+    query: {
+        name: string;
+        description?: string;
+    };
+    url: '/portfolios/{portfolio_id}';
 };
 
-export type ReadUserPortfoliosPortfoliosUserUserIdGetErrors = {
+export type UpdatePortfolioPortfoliosPortfolioIdPutErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type ReadUserPortfoliosPortfoliosUserUserIdGetError = ReadUserPortfoliosPortfoliosUserUserIdGetErrors[keyof ReadUserPortfoliosPortfoliosUserUserIdGetErrors];
+export type UpdatePortfolioPortfoliosPortfolioIdPutError = UpdatePortfolioPortfoliosPortfolioIdPutErrors[keyof UpdatePortfolioPortfoliosPortfolioIdPutErrors];
 
-export type ReadUserPortfoliosPortfoliosUserUserIdGetResponses = {
+export type UpdatePortfolioPortfoliosPortfolioIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: PortfolioResponse;
+};
+
+export type UpdatePortfolioPortfoliosPortfolioIdPutResponse = UpdatePortfolioPortfoliosPortfolioIdPutResponses[keyof UpdatePortfolioPortfoliosPortfolioIdPutResponses];
+
+export type ReadUserPortfoliosPortfoliosMyPortfoliosGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/portfolios/my-portfolios';
+};
+
+export type ReadUserPortfoliosPortfoliosMyPortfoliosGetResponses = {
     /**
      * Successful Response
      */
     200: Array<PortfolioResponse>;
 };
 
-export type ReadUserPortfoliosPortfoliosUserUserIdGetResponse = ReadUserPortfoliosPortfoliosUserUserIdGetResponses[keyof ReadUserPortfoliosPortfoliosUserUserIdGetResponses];
+export type ReadUserPortfoliosPortfoliosMyPortfoliosGetResponse = ReadUserPortfoliosPortfoliosMyPortfoliosGetResponses[keyof ReadUserPortfoliosPortfoliosMyPortfoliosGetResponses];
 
 export type CreateTransactionTransactionsPostData = {
     body: TransactionCreate;
@@ -465,10 +542,37 @@ export type CreateTransactionTransactionsPostResponses = {
     /**
      * Successful Response
      */
-    200: TransactionResponse;
+    201: TransactionResponse;
 };
 
 export type CreateTransactionTransactionsPostResponse = CreateTransactionTransactionsPostResponses[keyof CreateTransactionTransactionsPostResponses];
+
+export type DeleteTransactionTransactionsTransactionIdDeleteData = {
+    body?: never;
+    path: {
+        transaction_id: number;
+    };
+    query?: never;
+    url: '/transactions/{transaction_id}';
+};
+
+export type DeleteTransactionTransactionsTransactionIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteTransactionTransactionsTransactionIdDeleteError = DeleteTransactionTransactionsTransactionIdDeleteErrors[keyof DeleteTransactionTransactionsTransactionIdDeleteErrors];
+
+export type DeleteTransactionTransactionsTransactionIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteTransactionTransactionsTransactionIdDeleteResponse = DeleteTransactionTransactionsTransactionIdDeleteResponses[keyof DeleteTransactionTransactionsTransactionIdDeleteResponses];
 
 export type ReadTransactionTransactionsTransactionIdGetData = {
     body?: never;
@@ -496,6 +600,33 @@ export type ReadTransactionTransactionsTransactionIdGetResponses = {
 };
 
 export type ReadTransactionTransactionsTransactionIdGetResponse = ReadTransactionTransactionsTransactionIdGetResponses[keyof ReadTransactionTransactionsTransactionIdGetResponses];
+
+export type UpdateTransactionTransactionsTransactionIdPutData = {
+    body: TransactionCreate;
+    path: {
+        transaction_id: number;
+    };
+    query?: never;
+    url: '/transactions/{transaction_id}';
+};
+
+export type UpdateTransactionTransactionsTransactionIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateTransactionTransactionsTransactionIdPutError = UpdateTransactionTransactionsTransactionIdPutErrors[keyof UpdateTransactionTransactionsTransactionIdPutErrors];
+
+export type UpdateTransactionTransactionsTransactionIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: TransactionResponse;
+};
+
+export type UpdateTransactionTransactionsTransactionIdPutResponse = UpdateTransactionTransactionsTransactionIdPutResponses[keyof UpdateTransactionTransactionsTransactionIdPutResponses];
 
 export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetData = {
     body?: never;
@@ -525,5 +656,5 @@ export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses 
 export type TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponse = TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses[keyof TransactionsByPortfolioTransactionsPortfolioPortfolioIdGetResponses];
 
 export type ClientOptions = {
-    baseUrl: 'http://cryptonav.local' | (string & {});
+    baseUrl: 'http://cryptonav_api:8000' | (string & {});
 };

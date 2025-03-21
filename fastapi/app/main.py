@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.router import (
     users_router,
-    items_router,
     assets_router,
     portfolios_router,
     transactions_router,
@@ -45,7 +44,6 @@ async def health_check():
 
 # Gắn các router vào ứng dụng
 app.include_router(users_router)
-app.include_router(items_router)
 app.include_router(assets_router)
 app.include_router(portfolios_router)
 app.include_router(transactions_router)

@@ -1,37 +1,50 @@
-import { Link } from "react-router-dom";
+import React from "react";
 
-export default function AppSidebar() {
+export const AppSideBar: React.FC = () => {
   return (
-    <aside className="w-64 bg-gray-900 border-r border-gray-800">
-      <nav className="mt-4">
-        <ul>
+    <aside className="w-64 h-full bg-white border-r border-gray-200 p-4">
+      {/* Logo / Tiêu đề */}
+      <div className="text-xl font-bold mb-6">
+        <a href="/">Cryptonav</a>
+      </div>
+
+      {/* Menu */}
+      <nav>
+        <ul className="space-y-2">
           <li>
-            <Link to="/" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
+            <a href="/" className="block py-2 text-gray-700 hover:text-blue-600">
               Dashboard
-            </Link>
+            </a>
           </li>
           <li>
-            <Link to="/portfolio" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
-              Portfolio
-            </Link>
+            <a href="/portfolio" className="block py-2 text-gray-700 hover:text-blue-600">
+              Porfolio
+            </a>
           </li>
           <li>
-            <Link to="/transactions" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
+            <a href="/assets" className="block py-2 text-gray-700 hover:text-blue-600">
+              Assets
+            </a>
+          </li>
+          <li>
+            <a href="/transactions" className="block py-2 text-gray-700 hover:text-blue-600">
               Transactions
-            </Link>
+            </a>
           </li>
           <li>
-            <Link to="/analytics" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
-              AI Analytics
-            </Link>
+            <a href="#" className="block py-2 text-gray-700 hover:text-blue-600">
+              Documents
+            </a>
           </li>
           <li>
-            <Link to="/settings" className="block px-4 py-2 text-gray-300 hover:bg-gray-800">
-              Settings
-            </Link>
+            <a href="#" className="block py-2 text-gray-700 hover:text-blue-600">
+              Reports
+            </a>
           </li>
         </ul>
       </nav>
     </aside>
   );
-}
+};
+
+export default AppSideBar;

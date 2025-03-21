@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (token) {
       // Tại đây bạn có thể giải mã token hoặc gọi API lấy thông tin user chi tiết
-      setUser({ username: "loaded-from-token" });
+      // setUser({ username: "loaded-from-token" });
     }
   }, [token]);
 

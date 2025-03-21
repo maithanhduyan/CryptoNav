@@ -56,7 +56,25 @@
                 "kind": "build",
                 "isDefault": false
             }
-        }
+        },
+        {
+            "label": "Alembic: Remove Item model",
+            "type": "shell",
+            "command": "alembic revision --autogenerate -m 'Remove Item model'",
+            "options": {
+                // "cwd": "${workspaceFolder}/"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
     ],
     "inputs": [
         {
