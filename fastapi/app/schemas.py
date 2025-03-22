@@ -108,3 +108,23 @@ class TransactionResponse(TransactionBase):
 
     class Config:
         orm_mode = True
+
+
+class PriceHistoryBase(BaseModel):
+    asset_id: int
+    date: datetime
+    open_price: Optional[float] = None
+    close_price: Optional[float] = None
+    high_price: Optional[float] = None
+    low_price: Optional[float] = None
+
+
+class PriceHistoryCreate(PriceHistoryBase):
+    pass
+
+
+class PriceHistoryResponse(PriceHistoryBase):
+    id: int
+
+    class Config:
+        orm_mode = True

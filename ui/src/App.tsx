@@ -10,6 +10,9 @@ import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import Home from "./pages/Dashboard/Home";
 import Asset from "./pages/Asset/Asset";
+import Portfolio from "./pages/Portfolio/Portfolio";
+import Transaction from "./pages/Transaction/Transaction";
+import PriceHistory from "./pages/PriceHistory/PriceHistory";
 
 function App() {
   const { token } = useAuth();
@@ -25,8 +28,11 @@ function App() {
             token ? (
               <AppLayout>
                 <Routes>
-                  <Route path="/assets" element={<Asset />} />
                   <Route path="/" element={<Home />} />
+                  <Route path="/assets" element={<Asset />} />
+                  <Route path="/portfolio" element={<Portfolio />} />
+                  <Route path="/transactions" element={<Transaction />} />
+                  <Route path="/price-history" element={<PriceHistory />} />
                 </Routes>
               </AppLayout>
             ) : (

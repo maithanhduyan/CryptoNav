@@ -17,6 +17,11 @@ export type HttpValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type PortfolioBase = {
+    name: string;
+    description?: string | null;
+};
+
 export type PortfolioCreate = {
     name: string;
     description?: string | null;
@@ -29,6 +34,16 @@ export type PortfolioResponse = {
     id: number;
     user_id: number;
     created_at: string;
+};
+
+export type PriceHistoryResponse = {
+    asset_id: number;
+    date: string;
+    open_price?: number | null;
+    close_price?: number | null;
+    high_price?: number | null;
+    low_price?: number | null;
+    id: number;
 };
 
 export type TransactionCreate = {
@@ -397,6 +412,33 @@ export type UpdateAssetAssetsAssetIdPutResponses = {
 
 export type UpdateAssetAssetsAssetIdPutResponse = UpdateAssetAssetsAssetIdPutResponses[keyof UpdateAssetAssetsAssetIdPutResponses];
 
+export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetData = {
+    body?: never;
+    path: {
+        asset_id: number;
+    };
+    query?: never;
+    url: '/assets/{asset_id}/price-history';
+};
+
+export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetError = ReadPriceHistoryAssetsAssetIdPriceHistoryGetErrors[keyof ReadPriceHistoryAssetsAssetIdPriceHistoryGetErrors];
+
+export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: Array<PriceHistoryResponse>;
+};
+
+export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponse = ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponses[keyof ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponses];
+
 export type CreatePortfolioPortfoliosPostData = {
     body: PortfolioCreate;
     path?: never;
@@ -477,14 +519,11 @@ export type ReadPortfolioPortfoliosPortfolioIdGetResponses = {
 export type ReadPortfolioPortfoliosPortfolioIdGetResponse = ReadPortfolioPortfoliosPortfolioIdGetResponses[keyof ReadPortfolioPortfoliosPortfolioIdGetResponses];
 
 export type UpdatePortfolioPortfoliosPortfolioIdPutData = {
-    body?: never;
+    body: PortfolioBase;
     path: {
         portfolio_id: number;
     };
-    query: {
-        name: string;
-        description?: string;
-    };
+    query?: never;
     url: '/portfolios/{portfolio_id}';
 };
 
