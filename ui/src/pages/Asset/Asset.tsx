@@ -6,6 +6,7 @@ import {
   updateAssetAssetsAssetIdPut,
   deleteAssetAssetsAssetIdDelete,
 } from "../../client/sdk.gen";
+import Card from "../../components/ui/Card";
 
 interface Asset {
   id: number;
@@ -28,6 +29,11 @@ const Asset: React.FC = () => {
   }, []);
 
   const fetchAssets = async () => {
+    if (!token) {
+      setError("Bạn cần đăng nhập để xem danh sách assets");
+      setLoading(false);
+      return;
+    }
     try {
       const response = await readAssetsAssetsGet({
         headers: { Authorization: `Bearer ${token}` },
@@ -121,70 +127,50 @@ const Asset: React.FC = () => {
       {/* Danh sách assets */}
       <ul className="space-y-2">
         {assets.map((asset) => (
-          <li key={asset.id} className="flex items-center space-x-4">
+          <li key={asset.id}>
             {editingAsset?.id === asset.id ? (
+              // Form chỉnh sửa giữ nguyên
               <>
                 <input
                   type="text"
                   value={editingAsset.symbol}
-                  onChange={(e) =>
-                    setEditingAsset({ ...editingAsset, symbol: e.target.value })
-                  }
+                  onChange={(e) => setEditingAsset({ ...editingAsset, symbol: e.target.value })}
                   className="border p-1 rounded-md"
                 />
-                <input
-                  type="text"
-                  value={editingAsset.name}
-                  onChange={(e) =>
-                    setEditingAsset({ ...editingAsset, name: e.target.value })
-                  }
-                  className="border p-1 rounded-md"
-                />
-                <input
-                  type="text"
-                  value={editingAsset.description || ""}
-                  onChange={(e) =>
-                    setEditingAsset({ ...editingAsset, description: e.target.value })
-                  }
-                  className="border p-1 rounded-md"
-                />
-                <button
-                  onClick={handleUpdateAsset}
-                  className="bg-green-500 text-white p-1 rounded-md hover:bg-green-600"
-                >
+                {/* Các input khác */}
+                <button onClick={handleUpdateAsset} className="bg-green-500 text-white p-1 rounded-md hover:bg-green-600">
                   Lưu
                 </button>
-                <button
-                  onClick={() => setEditingAsset(null)}
-                  className="bg-gray-500 text-white p-1 rounded-md hover:bg-gray-600"
-                >
+                <button onClick={() => setEditingAsset(null)} className="bg-gray-500 text-white p-1 rounded-md hover:bg-gray-600">
                   Hủy
                 </button>
               </>
             ) : (
-              <>
-                <span>
-                  {asset.symbol} - {asset.name}{" "}
-                  {asset.description && `(${asset.description})`}
-                </span>
-                <button
-                  onClick={() => setEditingAsset(asset)}
-                  className="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-600"
-                >
-                  Sửa
-                </button>
-                <button
-                  onClick={() => handleDeleteAsset(asset.id)}
-                  className="bg-red-500 text-white p-1 rounded-md hover:bg-red-600"
-                >
-                  Xóa
-                </button>
-              </>
+              <Card
+                title={asset.symbol}
+                content={`${asset.name}${asset.description ? ` - ${asset.description}` : ""}`}
+              >
+                <div className="flex space-x-2 mt-2">
+                  <button
+                    onClick={() => setEditingAsset(asset)}
+                    className="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-600"
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => handleDeleteAsset(asset.id)}
+                    className="bg-red-500 text-white p-1 rounded-md hover:bg-red-600"
+                  >
+                    Xóa
+                  </button>
+                </div>
+              </Card>
             )}
           </li>
         ))}
       </ul>
     </div>
+
   );
 };
 

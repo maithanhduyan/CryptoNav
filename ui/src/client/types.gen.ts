@@ -36,6 +36,15 @@ export type PortfolioResponse = {
     created_at: string;
 };
 
+export type PriceHistoryCreate = {
+    asset_id: number;
+    date: string;
+    open_price?: number | null;
+    close_price?: number | null;
+    high_price?: number | null;
+    low_price?: number | null;
+};
+
 export type PriceHistoryResponse = {
     asset_id: number;
     date: string;
@@ -438,6 +447,89 @@ export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponses = {
 };
 
 export type ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponse = ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponses[keyof ReadPriceHistoryAssetsAssetIdPriceHistoryGetResponses];
+
+export type CreatePriceHistoryAssetsAssetIdPriceHistoryPostData = {
+    body: PriceHistoryCreate;
+    path: {
+        asset_id: number;
+    };
+    query?: never;
+    url: '/assets/{asset_id}/price-history';
+};
+
+export type CreatePriceHistoryAssetsAssetIdPriceHistoryPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreatePriceHistoryAssetsAssetIdPriceHistoryPostError = CreatePriceHistoryAssetsAssetIdPriceHistoryPostErrors[keyof CreatePriceHistoryAssetsAssetIdPriceHistoryPostErrors];
+
+export type CreatePriceHistoryAssetsAssetIdPriceHistoryPostResponses = {
+    /**
+     * Successful Response
+     */
+    201: PriceHistoryResponse;
+};
+
+export type CreatePriceHistoryAssetsAssetIdPriceHistoryPostResponse = CreatePriceHistoryAssetsAssetIdPriceHistoryPostResponses[keyof CreatePriceHistoryAssetsAssetIdPriceHistoryPostResponses];
+
+export type DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteData = {
+    body?: never;
+    path: {
+        asset_id: number;
+        price_history_id: number;
+    };
+    query?: never;
+    url: '/assets/{asset_id}/price-history/{price_history_id}';
+};
+
+export type DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteError = DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteErrors[keyof DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteErrors];
+
+export type DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteResponse = DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteResponses[keyof DeletePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdDeleteResponses];
+
+export type UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutData = {
+    body: PriceHistoryCreate;
+    path: {
+        asset_id: number;
+        price_history_id: number;
+    };
+    query?: never;
+    url: '/assets/{asset_id}/price-history/{price_history_id}';
+};
+
+export type UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutError = UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutErrors[keyof UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutErrors];
+
+export type UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: PriceHistoryResponse;
+};
+
+export type UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutResponse = UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutResponses[keyof UpdatePriceHistoryAssetsAssetIdPriceHistoryPriceHistoryIdPutResponses];
 
 export type CreatePortfolioPortfoliosPostData = {
     body: PortfolioCreate;

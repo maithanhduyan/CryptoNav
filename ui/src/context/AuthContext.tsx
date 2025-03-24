@@ -1,8 +1,8 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import { loginUsersLoginPost, registerUserUsersRegisterPost } from "../client/sdk.gen";
+import { loginUsersLoginPost, readCurrentUserUsersMeGet, registerUserUsersRegisterPost } from "../client/sdk.gen";
 
 interface AuthContextType {
-  user: { username: string } | null;
+  user: { id: number; username: string; email: string } | null;
   token: string | null;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
@@ -12,7 +12,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<{ username: string } | null>(null);
+  const [user, setUser] = useState<{ id: number; username: string; email: string } | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem("token") || null);
 
   useEffect(() => {
@@ -22,17 +22,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [token]);
 
+  const fetchUser = async () => {
+    try {
+      const response = await readCurrentUserUsersMeGet({
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(response.data as { id: number; username: string; email: string });
+    } catch (error) {
+      console.error("Failed to fetch user data", error);
+    }
+  };
+
   const login = async (username: string, password: string) => {
     try {
-      // Gọi endpoint đăng nhập sử dụng openapi-ts
       const response = await loginUsersLoginPost({
         query: { username, password },
       });
-      // Giả sử API trả về access_token trong response.data
       const { access_token } = response.data as { access_token: string };
-      setUser({ username });
       setToken(access_token);
       localStorage.setItem("token", access_token);
+      await fetchUser(); // Lấy thông tin người dùng sau khi đăng nhập
     } catch (error) {
       throw new Error("Login failed");
     }
@@ -40,12 +49,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (username: string, email: string, password: string) => {
     try {
-      // Gọi endpoint đăng ký sử dụng openapi-ts
       await registerUserUsersRegisterPost({
-        query: { username, email, password },
+        body: { username, email, password }, // Truyền qua body
       });
-      // Sau khi đăng ký thành công, tự động đăng nhập
-      // await login(username, password);
+      // Tự động đăng nhập sau khi đăng ký (nếu cần)
+      await login(username, password);
     } catch (error) {
       throw new Error("Registration failed");
     }
