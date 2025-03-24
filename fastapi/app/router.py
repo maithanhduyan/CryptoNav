@@ -14,6 +14,8 @@ from app.schemas import (
     UserBase,
     UserCreate,
     UserResponse,
+    PriceHistoryCreate,
+    PriceHistoryResponse
 )
 
 # Tạo các router riêng biệt
@@ -333,8 +335,6 @@ def delete_transaction(
     crud.delete_transaction(db, transaction_id)
     return {"message": "Transaction deleted successfully"}
 
-# Thêm router mới hoặc tích hợp vào assets_router
-from app.schemas import PriceHistoryResponse
 
 # Endpoint: Lấy lịch sử giá của một asset
 @assets_router.get("/{asset_id}/price-history", response_model=List[PriceHistoryResponse])
@@ -349,3 +349,83 @@ def read_price_history(
 
     price_history = crud.get_price_history_by_asset(db, asset_id)
     return price_history
+
+# Endpoint: Tạo lịch sử giá mới cho asset
+@assets_router.post("/{asset_id}/price-history", response_model=PriceHistoryResponse, status_code=status.HTTP_201_CREATED)
+def create_price_history(
+    asset_id: int,
+    price_history: PriceHistoryCreate,
+    db: Session = Depends(get_db),
+    current_user: model.User = Depends(auth.get_current_user),
+):
+    # Kiểm tra asset tồn tại
+    asset = crud.get_asset(db, asset_id)
+    if not asset:
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    # Tạo bản ghi mới
+    new_price_history = crud.create_price_history(
+        db=db,
+        asset_id=asset_id,
+        date=price_history.date,
+        open_price=price_history.open_price,
+        close_price=price_history.close_price,
+        high_price=price_history.high_price,
+        low_price=price_history.low_price
+    )
+    return new_price_history
+
+# Endpoint: Cập nhật lịch sử giá cho asset
+@assets_router.put("/{asset_id}/price-history/{price_history_id}", response_model=PriceHistoryResponse)
+def update_price_history(
+    asset_id: int,
+    price_history_id: int,
+    price_history: PriceHistoryCreate,
+    db: Session = Depends(get_db),
+    current_user: model.User = Depends(auth.get_current_user),
+):
+    # Kiểm tra asset tồn tại
+    asset = crud.get_asset(db, asset_id)
+    if not asset:
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    # Kiểm tra price_history tồn tại
+    existing_price_history = db.query(model.PriceHistory).filter(
+        model.PriceHistory.id == price_history_id,
+        model.PriceHistory.asset_id == asset_id
+    ).first()
+    if not existing_price_history:
+        raise HTTPException(status_code=404, detail="Price history not found")
+
+    # Cập nhật dữ liệu
+    for key, value in price_history.dict().items():
+        setattr(existing_price_history, key, value)
+    db.commit()
+    db.refresh(existing_price_history)
+    return existing_price_history
+
+# Endpoint: Xóa lịch sử giá cho asset
+@assets_router.delete("/{asset_id}/price-history/{price_history_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_price_history(
+    asset_id: int,
+    price_history_id: int,
+    db: Session = Depends(get_db),
+    current_user: model.User = Depends(auth.get_current_user),
+):
+    # Kiểm tra asset tồn tại
+    asset = crud.get_asset(db, asset_id)
+    if not asset:
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    # Kiểm tra price_history tồn tại
+    price_history = db.query(model.PriceHistory).filter(
+        model.PriceHistory.id == price_history_id,
+        model.PriceHistory.asset_id == asset_id
+    ).first()
+    if not price_history:
+        raise HTTPException(status_code=404, detail="Price history not found")
+
+    # Xóa bản ghi
+    db.delete(price_history)
+    db.commit()
+    return {"message": "Price history deleted successfully"}
