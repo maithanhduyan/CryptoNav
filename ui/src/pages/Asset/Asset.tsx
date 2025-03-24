@@ -52,8 +52,9 @@ const Asset: React.FC = () => {
         body: newAsset,
         headers: { Authorization: `Bearer ${token}` },
       });
-      setNewAsset({ symbol: "", name: "", description: "" }); // Reset form
-      fetchAssets(); // Cập nhật danh sách
+      setNewAsset({ symbol: "", name: "", description: "" });
+      setError(null); // Xóa lỗi sau khi thành công
+      fetchAssets();
     } catch (err) {
       setError("Không thể thêm asset");
     }

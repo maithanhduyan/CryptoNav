@@ -59,7 +59,7 @@ const Portfolio: React.FC = () => {
     try {
       await updatePortfolioPortfoliosPortfolioIdPut({
         path: { portfolio_id: editingPortfolio.id },
-        query: { name: editingPortfolio.name, description: editingPortfolio.description || "" },
+        body: { name: editingPortfolio.name, description: editingPortfolio.description || "" },
         headers: { Authorization: `Bearer ${token}` },
       });
       setEditingPortfolio(null);

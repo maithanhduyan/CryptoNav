@@ -49,6 +49,21 @@ const Transaction: React.FC = () => {
     fetchData();
   }, []);
 
+  const fetchTransactions = async (portfolioId: number) => {
+    try {
+      const transRes = await transactionsByPortfolioTransactionsPortfolioPortfolioIdGet({
+        path: { portfolio_id: portfolioId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTransactions(transRes.data as Transaction[]);
+      setError(null);
+    } catch (err) {
+      setError("Không thể tải transactions");
+    }
+  };
+
+
+  // Sửa fetchData để không gọi transactions ngay lập tức
   const fetchData = async () => {
     try {
       const [portfolioRes, assetRes] = await Promise.all([
@@ -57,13 +72,9 @@ const Transaction: React.FC = () => {
       ]);
       setPortfolios(portfolioRes.data as Portfolio[]);
       setAssets(assetRes.data as Asset[]);
-      // Giả định lấy giao dịch từ portfolio đầu tiên
-      if (portfolioRes.data.length > 0) {
-        const transRes = await transactionsByPortfolioTransactionsPortfolioPortfolioIdGet({
-          path: { portfolio_id: portfolioRes.data[0].id },
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setTransactions(transRes.data as Transaction[]);
+      if (portfolioRes.data && portfolioRes.data.length > 0) {
+        setNewTransaction(prev => ({ ...prev, portfolio_id: portfolioRes.data[0].id }));
+        fetchTransactions(portfolioRes.data[0].id);
       }
     } catch (err) {
       setError("Không thể tải dữ liệu");
@@ -267,3 +278,4 @@ const Transaction: React.FC = () => {
 };
 
 export default Transaction;
+
